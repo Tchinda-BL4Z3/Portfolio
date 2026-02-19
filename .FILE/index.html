@@ -70,7 +70,7 @@
     <!-- Main Content -->
     <main>
         <!-- Hero Section -->
-        <section class="hero-section text-center d-flex align-items-center py-5" id="hero">
+        <section class="hero-section text-center d-flex align-items-center" id="hero">
             <div class="container fade-in">
                 <img src="src/profil.jpg" alt="Tchinda Fogang" class="profile-pic mb-4">
                 <h1 class="display-3 fw-bold mb-3">Tchinda Fogang</h1>
@@ -97,7 +97,7 @@
         </section>
 
         <!-- Skills Section -->
-        <section class="py-5 bg-darker" id="skills">
+        <section class="py-5" id="skills">
             <div class="container fade-in">
                 <h2 class="section-heading text-center mb-5"><i class="fas fa-laptop-code me-3"></i>Mes Compétences Techniques</h2>
                 <div class="skills-grid">
@@ -169,45 +169,49 @@
                     <div class="carousel-inner">
                         <!-- Certification Item 1 -->
                         <div class="carousel-item active">
-                            <div class="certification-card">
-                                <img src="src/T2.0.png" alt="Certification Web Dev Basic">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="certifications-details.html" class="btn btn-outline btn-sm">Voir Détails <i class="fas fa-external-link-alt ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="certification-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Certification Web Dev Basic">
+                                <h3>Web Dev Basic</h3>
+                                <p class="text-muted">Certification en fondamentaux du développement web.</p>
+                                <a href="certifications-details.html" class="btn btn-outline btn-sm mt-3">Voir Détails <i class="fas fa-external-link-alt ms-2"></i></a>
                             </div>
                         </div>
                         <!-- Certification Item 2 -->
                         <div class="carousel-item">
-                            <div class="certification-card">
-                                <img src="src/T2.0.png" alt="Certification Data Science">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="certifications-details.html" class="btn btn-outline btn-sm">Voir Détails <i class="fas fa-external-link-alt ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="certification-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Certification Data Science">
+                                <h3>Data Science</h3>
+                                <p class="text-muted">Attestation en introduction à la science des données.</p>
+                                <a href="certifications-details.html" class="btn btn-outline btn-sm mt-3">Voir Détails <i class="fas fa-external-link-alt ms-2"></i></a>
                             </div>
                         </div>
                         <!-- Certification Item 3 -->
                         <div class="carousel-item">
-                            <div class="certification-card">
-                                <img src="src/T2.0.png" alt="Certification Network Security">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="certifications-details.html" class="btn btn-outline btn-sm">Voir Détails <i class="fas fa-external-link-alt ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="certification-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Certification Network Security">
+                                <h3>Network Security</h3>
+                                <p class="text-muted">Certification en sécurité des réseaux et protocoles.</p>
+                                <a href="certifications-details.html" class="btn btn-outline btn-sm mt-3">Voir Détails <i class="fas fa-external-link-alt ms-2"></i></a>
                             </div>
                         </div>
-                        <!-- Certification Item N# -->
-                        
+                        <!-- Certification Item 4 -->
+                        <div class="carousel-item">
+                            <div class="certification-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Certification Cloud Fundamentals">
+                                <h3>Cloud Fundamentals</h3>
+                                <p class="text-muted">Concepts fondamentaux du cloud computing (AWS, Azure).</p>
+                                <a href="certifications-details.html" class="btn btn-outline btn-sm mt-3">Voir Détails <i class="fas fa-external-link-alt ms-2"></i></a>
+                            </div>
+                        </div>
+                        <!-- Certification Item 5 -->
+                        <div class="carousel-item">
+                            <div class="certification-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Certification JavaScript Advanced">
+                                <h3>JavaScript Advanced</h3>
+                                <p class="text-muted">Maîtrise avancée de JavaScript et de ses frameworks.</p>
+                                <a href="certifications-details.html" class="btn btn-outline btn-sm mt-3">Voir Détails <i class="fas fa-external-link-alt ms-2"></i></a>
+                            </div>
+                        </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#certificationsCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -218,7 +222,7 @@
                         <span class="visually-hidden">Suivant</span>
                     </button>
                 </div>
-                <p class="text-center mt-4 ">Explorez mes qualifications et compétences reconnues.</p>
+                <p class="text-center mt-4 text-muted">Explorez mes qualifications et compétences reconnues.</p>
                 <div class="text-center mt-3">
                     <a href="certifications-details.html" class="btn btn-primary">Voir Toutes les Certifications</a>
                 </div>
@@ -226,56 +230,42 @@
         </section>
 
         <!-- Projects Section -->
-        <section class="py-5 bg-darker" id="projects">
+        <section class="py-5" id="projects">
             <div class="container fade-in">
                 <h2 class="section-heading text-center mb-5"><i class="fas fa-rocket me-3"></i>Mes Projets Récents</h2>
                 <div id="projectsCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <!-- Project Item 1 -->
                         <div class="carousel-item active">
-                            <div class="project-card">
-                                <img src="src/T2.0.png" alt="Projet Web Interactif">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir Live <i class="fas fa-external-link-alt ms-1"></i></a>
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir Code <i class="fab fa-github ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="project-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Projet Web Interactif">
+                                <h3>Projet Web Interactif</h3>
+                                <p class="text-muted">Une application web interactive offrant une expérience utilisateur fluide et des fonctionnalités complètes.</p>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3">Voir Live <i class="fas fa-external-link-alt ms-2"></i></a>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3 ms-2">Voir Code <i class="fab fa-github ms-2"></i></a>
                             </div>
                         </div>
                         <!-- Project Item 2 -->
                         <div class="carousel-item">
-                            <div class="project-card">
-                                <img src="src/T2.0.png" alt="Application Mobile Flutter">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir App <i class="fas fa-mobile-alt ms-1"></i></a>
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir Code <i class="fab fa-github ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="project-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Application Mobile Flutter">
+                                <h3>Application Mobile Flutter</h3>
+                                <p class="text-muted">Développement d'une application mobile multiplateforme pour la gestion de tâches personnelles.</p>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3">Voir App <i class="fas fa-mobile-alt ms-2"></i></a>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3 ms-2">Voir Code <i class="fab fa-github ms-2"></i></a>
                             </div>
                         </div>
                         <!-- Project Item 3 -->
                         <div class="carousel-item">
-                            <div class="project-card">
-                                <img src="src/T2.0.png" alt="Application Mobile Flutter">
-                                <div class="card-content-wrapper">
-                                    <h3> </h3>
-                                    <p class="text-muted"> </p>
-                                    <div class="card-buttons mt-auto">
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir App <i class="fas fa-mobile-alt ms-1"></i></a>
-                                        <a href="projects-details.html" target="_blank" class="btn btn-outline btn-sm">Voir Code <i class="fab fa-github ms-1"></i></a>
-                                    </div>
-                                </div>
+                            <div class="project-card text-center">
+                                <img src="src/T2.0.png" class="img-fluid mb-3" alt="Analyse de Données Python">
+                                <h3>Analyse de Données Python</h3>
+                                <p class="text-muted">Projet d'analyse de grands ensembles de données pour en extraire des insights pertinents.</p>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3">Voir Rapport <i class="fas fa-chart-line ms-2"></i></a>
+                                <a href="#" target="_blank" class="btn btn-outline btn-sm mt-3 ms-2">Voir Code <i class="fab fa-github ms-2"></i></a>
                             </div>
                         </div>
-
                     </div>
-
                     <button class="carousel-control-prev" type="button" data-bs-target="#projectsCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Précédent</span>
@@ -284,9 +274,8 @@
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Suivant</span>
                     </button>
-
                 </div>
-                <p class="text-center mt-4 ">Découvrez mes réalisations et les technologies utilisées.</p>
+                <p class="text-center mt-4 text-muted">Découvrez mes réalisations et les technologies utilisées.</p>
                 <div class="text-center mt-3">
                     <a href="projects-details.html" class="btn btn-primary">Voir Tous les Projets</a>
                 </div>
@@ -339,7 +328,7 @@
         </section>
 
         <!-- Contact Section -->
-        <section class="py-5 bg-darker" id="contact">
+        <section class="py-5" id="contact">
             <div class="container fade-in">
                 <h2 class="section-heading text-center mb-5"><i class="fas fa-envelope me-3"></i>Contactez-moi</h2>
                 <div class="row justify-content-center">

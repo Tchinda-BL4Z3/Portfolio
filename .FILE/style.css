@@ -109,7 +109,7 @@ body {
 .hero-section {
     position: relative;
     height: 100vh;
-    background: linear-gradient(135deg, #0a0f2c 0%, #050810 100%);
+    background: url('https://via.placeholder.com/1920x1080/0d0d0d/1a1a1a?text=Background+Pattern') no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -124,7 +124,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(5, 8, 16, 0.3); /* Overlay adapté au nouveau thème */
+    background: rgba(0, 0, 0, 0.6); /* Overlay for readability */
     z-index: 1;
 }
 
@@ -310,39 +310,12 @@ section {
 
 /* In-progress notification card used on detail pages */
 .in-progress-card {
-    background: linear-gradient(135deg, rgba(13, 71, 161, 0.15) 0%, rgba(77, 208, 225, 0.08) 100%);
-    border: 2px solid rgba(13, 71, 161, 0.4);
+    background: linear-gradient(180deg, rgba(29,43,234,0.06), rgba(79,209,199,0.03));
+    border: 1px solid rgba(29,43,234,0.12);
     color: var(--text-light);
     border-radius: 12px;
-    position: relative;
-    overflow: hidden;
 }
-
-.in-progress-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, #4dd0e1, transparent);
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-.in-progress-card h4 {
-    color: #4dd0e1;
-    font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 2;
-}
+.in-progress-card h4 { color: var(--text-light); font-weight:600; }
 
 /* Icon inside skill tag */
 .skill-icon {
@@ -378,103 +351,49 @@ section {
 }
 
 .certification-card, .project-card {
-    background: linear-gradient(135deg, rgba(15, 20, 25, 0.8) 0%, rgba(10, 15, 44, 0.6) 100%);
-    border-radius: 15px;
-    padding: 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(13, 71, 161, 0.3);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.certification-card::before, .project-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(13, 71, 161, 0.1) 0%, rgba(77, 208, 225, 0.05) 100%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 1;
-    pointer-events: none;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .certification-card:hover, .project-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 15px 50px rgba(13, 71, 161, 0.3), 0 0 20px rgba(77, 208, 225, 0.2);
-    border-color: rgba(77, 208, 225, 0.6);
-}
-
-.certification-card:hover::before, .project-card:hover::before {
-    opacity: 1;
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border-color: var(--secondary);
 }
 
 .certification-card img, .project-card img {
     width: 100%;
-    height: 240px;
-    border-radius: 0;
-    border: none;
+    /* max-width: 300px; */
+    height: 200px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
     object-fit: cover;
-    transition: transform 0.4s ease, filter 0.4s ease;
-    position: relative;
-    z-index: 0;
 }
 
-.certification-card:hover img, .project-card:hover img {
-    transform: scale(1.08);
-    filter: brightness(1.1) contrast(1.1);
+.project-card img {
+    /* max-width: 400px; */
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
 }
 
 .certification-card h3, .project-card h3 {
     font-family: 'Orbitron', sans-serif;
-    color: #4dd0e1;
-    margin-top: 0;
-    margin-bottom: 12px;
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 25px 25px 0 25px;
-    position: relative;
-    z-index: 2;
-}
-
-.certification-card h3::before {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 25px;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(90deg, #0d47a1 0%, #4dd0e1 100%);
-    border-radius: 2px;
+    color: var(--primary);
+    margin-top: 20px;
+    font-size: 1.4rem;
 }
 
 .certification-card p, .project-card p {
     color: var(--text-muted);
-    font-size: 0.95rem;
-    margin: 0;
-    padding: 0 25px;
-    position: relative;
-    z-index: 2;
-}
-
-.certification-card p:first-of-type, .project-card p:first-of-type {
-    padding-top: 20px;
-    font-weight: 600;
-    color: #0d47a1;
-    font-size: 0.85rem;
-}
-
-.certification-card p:last-of-type, .project-card p:last-of-type {
-    flex-grow: 1;
-    padding-bottom: 20px;
-    line-height: 1.6;
+    font-size: 1rem;
+    margin-top: 10px;
 }
 
 .carousel-control-prev-icon, .carousel-control-next-icon {
@@ -490,88 +409,18 @@ section {
     opacity: 0.9;
 }
 
-/* Card content wrapper styles */
-.card-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    position: relative;
-    z-index: 2;
-}
-
-.card-tech-badge {
-    display: inline-block;
-    padding: 5px 12px;
-    background: rgba(13, 71, 161, 0.2);
-    border: 1px solid rgba(13, 71, 161, 0.4);
-    border-radius: 20px;
-    color: #4dd0e1;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 3px 5px 3px 0;
-    transition: all 0.3s ease;
-}
-
-.card-tech-badge:hover {
-    background: rgba(13, 71, 161, 0.4);
-    border-color: #4dd0e1;
-}
-
-.card-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-/* Responsive adjustments for cards */
-@media (max-width: 768px) {
-    .certification-card, .project-card {
-        padding: 0;
-    }
-
-    .certification-card img, .project-card img {
-        height: 180px;
-    }
-
-    .certification-card h3, .project-card h3 {
-        font-size: 1.1rem;
-        padding: 20px 20px 0 20px;
-    }
-
-    .btn-outline.btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-    }
-}
-
 .btn-outline.btn-sm {
-    border-color: #4dd0e1;
-    color: #4dd0e1;
-    padding: 0.6rem 1.3rem;
-    font-size: 0.85rem;
+    border-color: var(--secondary);
+    color: var(--secondary);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
     border-radius: 25px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0 5px 20px 5px;
-    position: relative;
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
-    border: 2px solid #4dd0e1;
-    background: transparent;
 }
 
 .btn-outline.btn-sm:hover {
-    background-color: #4dd0e1;
-    color: #050810;
-    box-shadow: 0 5px 20px rgba(77, 208, 225, 0.4);
-    transform: translateY(-3px);
+    background-color: var(--secondary);
+    color: var(--text-light);
+    box-shadow: 0 3px 10px rgba(79, 209, 199, 0.4);
 }
 
 /* Services Section */
