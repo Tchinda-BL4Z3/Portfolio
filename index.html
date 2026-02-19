@@ -367,7 +367,10 @@
                                 </div>
                             </div>
                             <!-- Terminal Input Form -->
-                            <form class="terminal-form" id="contactForm">
+                            <form class="terminal-form" id="contactForm" action="https://formspree.io/f/xykdpqel" method="POST">
+                                <!-- Hidden fields for non-JS fallback / formspree -->
+                                <input type="hidden" name="_subject" value="Nouveau message depuis le site - Portfolio">
+                                <input type="hidden" name="_replyto" id="replytoHidden" value="">
                                 <div class="terminal-input-group">
                                     <label for="terminalName" class="terminal-label">nom:</label>
                                     <input type="text" class="terminal-input" id="terminalName" name="name" required>

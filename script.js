@@ -131,33 +131,42 @@ document.addEventListener('DOMContentLoaded', () => {
                         messages.push(contactData);
                         localStorage.setItem('contactMessages', JSON.stringify(messages));
 
-                        // Try to send via FormSubmit or other service
-                        fetch('https://formspree.io/f/mgvwdbvo', {
+                        // Send via Formspree using FormData (more compatible than forcing JSON)
+                        const formEndpoint = 'https://formspree.io/f/xykdpqel';
+                        // set hidden reply-to for non-JS fallback
+                        const replyHidden = document.getElementById('replytoHidden');
+                        if (replyHidden) replyHidden.value = email;
+
+                        const fd = new FormData();
+                        fd.append('name', name);
+                        fd.append('email', email);
+                        fd.append('subject', subject);
+                        fd.append('message', message);
+                        fd.append('_subject', `Nouveau message site: ${subject}`);
+                        fd.append('_replyto', email);
+
+                        fetch(formEndpoint, {
                             method: 'POST',
                             headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
+                                'Accept': 'application/json'
                             },
-                            body: JSON.stringify(contactData)
+                            body: fd
                         })
                         .then(response => {
                             if (response.ok) {
                                 addTerminalLine('systeme', '✅ Message envoyé avec succès!');
                                 addTerminalLine('systeme', `Confirmé à: ${new Date().toLocaleTimeString('fr-FR')}`);
-                                // Reset form
                                 contactForm.reset();
                                 document.getElementById('terminalName').focus();
                             } else {
-                                // Even if request fails, message is saved locally
-                                addTerminalLine('systeme', '✅ Message enregistré localement! (Mode offline)');
-                                addTerminalLine('systeme', 'Confirmation envoyée à votre email.');
+                                // Save locally if server returns non-OK
+                                addTerminalLine('systeme', '⚠ Envoi échoué côté serveur — message enregistré localement.');
                                 contactForm.reset();
                             }
                         })
                         .catch(error => {
-                            // Save locally if network error
-                            addTerminalLine('systeme', '✅ Message enregistré localement! (Mode offline)');
-                            addTerminalLine('systeme', 'Je récupérerai votre message ultérieurement.');
+                            // Network or CORS error: keep message locally and inform user
+                            addTerminalLine('systeme', '⚠ Erreur réseau/CORS — message enregistré localement.');
                             contactForm.reset();
                         });
                     }, 800);
