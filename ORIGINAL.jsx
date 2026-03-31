@@ -1,0 +1,857 @@
+import React, { useState, useEffect, useRef } from 'react';
+import emailjs from '@emailjs/browser';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Github, Linkedin, Instagram, Twitter, Terminal, ExternalLink, 
+  User2, Cpu, GraduationCap, Mail, Globe, Server, ShieldAlert, 
+  Wrench, Monitor, MapPin, Languages, Zap, Layout, Database,
+  ChevronLeft, ChevronRight, Menu, X, Loader2, Eye, Code2, Award, Link2
+} from 'lucide-react';
+
+const certImg = "https://s3.amazonaws.com/coursera_assets/meta_images/generated/CERTIFICATE_LANDING_PAGE/CERTIFICATE_LANDING_PAGE~YSFMHPJLFWQ8/CERTIFICATE_LANDING_PAGE~YSFMHPJLFWQ8.jpeg";
+
+const seededRandom = (seed) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
+const ParticleBackground = () => {
+  const particles = Array.from({ length: 50 }, (_, i) => ({
+    id: i,
+    x: seededRandom(i * 1.1) * 100,
+    y: seededRandom(i * 2.2) * 100,
+    size: seededRandom(i * 3.3) * 3 + 1,
+    duration: seededRandom(i * 4.4) * 20 + 10,
+    delay: seededRandom(i * 5.5) * 5,
+  }));
+
+  return (
+    <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="absolute rounded-full bg-cyan-500/20"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+            animation: `float ${p.duration}s ease-in-out ${p.delay}s infinite`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+          25% { transform: translateY(-20px) translateX(10px); opacity: 0.6; }
+          50% { transform: translateY(-10px) translateX(-10px); opacity: 0.4; }
+          75% { transform: translateY(-30px) translateX(5px); opacity: 0.5; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isClicking, setIsClicking] = useState(false);
+
+  useEffect(() => {
+    const updatePosition = (e) => setPosition({ x: e.clientX, y: e.clientY });
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
+
+    window.addEventListener('mousemove', updatePosition);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', updatePosition);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  return (
+    <>
+      <div
+        className="fixed top-0 left-0 w-4 h-4 border border-cyan-400 rounded-full pointer-events-none z-[9999] mix-blend-difference transition-transform duration-75"
+        style={{
+          transform: `translate(${position.x - 8}px, ${position.y - 8}px) scale(${isClicking ? 1.5 : 1})`,
+        }}
+      />
+      <div
+        className="fixed top-0 left-0 w-1 h-1 bg-cyan-400 rounded-full pointer-events-none z-[9999]"
+        style={{
+          transform: `translate(${position.x - 2}px, ${position.y - 2}px)`,
+        }}
+      />
+    </>
+  );
+};
+
+const translations = {
+  FR: {
+    nav: ["ABOUT", "SKILLS", "PROJECTS", "CERTIFICATIONS", "SERVICES", "CONTACTS"],
+    job: "Développeur Web, Programmeur et Analyste Sécurité",
+    terminalBtn: "TERMINAL_ACCESS",
+    about: {
+      title: "Identity_Brief",
+      bio: [
+        "Bienvenue sur mon portfolio ! Je suis Tchinda Fogang, un développeur web passionné et analyste en sécurité, dédié à la création d'écosystèmes numériques robustes et sécurisés.",
+        "Ma mission est de transformer des idées complexes en solutions élégantes et fonctionnelles, en mettant l'accent sur les bonnes pratiques de développement, la performance et l'expérience utilisateur.",
+        "Que ce soit pour des projets front-end interactifs, des back-ends puissants ou l'optimisation des infrastructures, je suis toujours prêt à relever de nouveaux défis. Explorez mes compétences, mes certifications et mes projets pour découvrir mon travail et n'hésitez pas à me contacter !"
+      ],
+      hire: "Recrutez-moi",
+      cv: "Télécharger CV"
+    },
+    skills: { 
+      title: "Core_Capabilities", subtitle: "MON ÉCOSYSTÈME TECHNIQUE",
+      categories: [
+        { title: "Frontend", desc: "Interfaces utilisateur réactives et performantes", skills: ["HTML", "CSS", "JavaScript", "JSON", "React", "Tailwind", "Vite"] },
+        { title: "Backend", desc: "APIs robustes et architectures scalables", skills: ["Node.js", "Express", "PHP", "Python", "Django", "Flask", "Java", "C++"] },
+        { title: "Base de données", desc: "Gestion et optimisation des données", skills: ["MySQL", "PostgreSQL", "SQL", "MongoDB", "Apache"] },
+        { title: "Sécurité", desc: "Tests d'intrusion et hardening", skills: ["Pentest", "Kali Linux", "Metasploit", "Burp Suite", "Nmap", "Wireshark"] },
+        { title: "DevOps & Tools", desc: "CI/CD, conteneurisation et collaboration", skills: ["Docker", "Git", "GitHub", "Linux", "AWS", "VS Code", "Postman", "Windows", "Markdown"] }
+      ]
+    },
+    projects: { 
+      title: "Selected_Works", 
+      subtitle: "ARCHIVES_PROJETS_V1.0",
+btn: "Project_Live",
+      paginationText: "Page {current} sur {total} — {count} projets",
+      items: [
+        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Interface de portfolio immersive simulant un système d'exploitation futuriste.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-fogang.onrender.com/" },
+        { title: "NEXUS SECURE", type: "CYBER SECURITY", desc: "Outil d'analyse de vulnérabilités réseau avec tableau de bord en temps réel.", stack: "Python / Kali", dep: "Local Host", id_code: "PROJ-002", link: "https://tchinda-fogang.onrender.com/" },
+        { title: "QUANTUM API", type: "BACKEND ARCH", desc: "Infrastructure micro-services hautement disponible pour traitement massif.", stack: "Node.js / PGSQL", dep: "Docker / AWS", id_code: "PROJ-003", link: "https://tchinda-fogang.onrender.com/" }
+      ]
+    },
+certs: {
+      title: "Verified_Credentials",
+      subtitle: "ACCRÉDITATIONS & DIPLÔMES",
+      paginationText: "Page {current} sur {total} — {count} certifications",
+      items: [
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Fondamentaux du développement web: HTML, CSS, JS et responsive design.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
+        { title: "Cybersecurity Essentials", issuer: "Cisco Academy", desc: "Principes fondamentaux de la sécurité informatique et protection des réseaux.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
+        { title: "Fullstack JavaScript", issuer: "Meta Professional", desc: "Maîtrise de React, Node.js et architectures modernes.", image: certImg, link: "https://tchinda-fogang.onrender.com/" }
+      ]
+    },
+    services: {
+      title: "Professional_Services",
+      subtitle: "SOLUTIONS & EXPERTISES TECHNIQUES",
+      items: [
+        { title: "Développement Fullstack", desc: "Conception d'applications web modernes, réactives et scalables utilisant les dernières architectures." },
+        { title: "Audit & Sécurité", desc: "Analyse de vulnérabilités, tests d'intrusion et sécurisation des infrastructures numériques." },
+        { title: "Architecture Système", desc: "Mise en place d'environnements virtualisés, gestion de serveurs Linux et déploiement Docker." },
+        { title: "Formation & Collaboration", desc: "Partage de connaissances, mentorat et collaboration sur des projets open source." }
+      ]
+    },
+    contact: {
+      title: "Contact_Protocol",
+      subtitle: "ESTABLISHING_COMMUNICATION_V2.0",
+      sendBtn: "Transmit_Signal",
+      labels: { name: "_Identity_Name", email: "_Access_Email", subject: "_Signal_Subject", msg: "_Transmission_Data" },
+      placeholders: { name: "EX: TCHINDA FOGANG", subject: "COLLABORATION / SÉCURITÉ / DÉVELOPPEMENT", msg: "ENTREZ VOTRE MESSAGE ICI..." }
+    },
+    footer: {
+      desc: "Architect de solutions numériques sécurisées et performantes. Dédié à l'innovation continue et à la robustesse des systèmes.",
+      cvBtn: "Télécharger_CV_Complet.PDF"
+    }
+  },
+  EN: {
+    nav: ["ABOUT", "SKILLS", "PROJECTS", "CERTIFICATIONS", "SERVICES", "CONTACTS"],
+    job: "Web Developer, Programmer & Security Analyst",
+    terminalBtn: "TERMINAL_ACCESS",
+    about: {
+      title: "Identity_Brief",
+      bio: [
+        "Welcome to my portfolio! I am Tchinda Fogang, a passionate web developer and security analyst, dedicated to creating robust and secure digital ecosystems.",
+        "My mission is to transform complex ideas into elegant and functional solutions, focusing on development best practices, performance, and user experience.",
+        "Whether for interactive front-end projects, powerful back-ends, or infrastructure optimization, I am always ready for new challenges. Explore my skills, certifications, and projects to discover my work!"
+      ],
+      hire: "Hire Me",
+      cv: "Download CV"
+    },
+    skills: { 
+      title: "Core_Capabilities", subtitle: "MY TECHNICAL ECOSYSTEM",
+      categories: [
+        { title: "Frontend", desc: "Responsive and high-performance user interfaces", skills: ["HTML", "CSS", "JavaScript", "JSON", "React", "Tailwind", "Vite"] },
+        { title: "Backend", desc: "Robust APIs and scalable architectures", skills: ["Node.js", "Express", "PHP", "Python", "Django", "Flask", "Java", "C++"] },
+        { title: "Database", desc: "Data management and optimization", skills: ["MySQL", "PostgreSQL", "SQL", "MongoDB", "Apache"] },
+        { title: "Security", desc: "Penetration testing and hardening", skills: ["Pentest", "Kali Linux", "Metasploit", "Burp Suite", "Nmap", "Wireshark"] },
+        { title: "DevOps & Tools", desc: "CI/CD, containerization and collaboration", skills: ["Docker", "Git", "GitHub", "Linux", "AWS", "VS Code", "Postman", "Windows", "Markdown"] }
+      ]
+    },
+    projects: { 
+      title: "Selected_Works", 
+      subtitle: "PROJECT_ARCHIVES_V1.0",
+      btn: "Project_Live",
+      paginationText: "Page {current} of {total} — {count} projects",
+      items: [
+        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Immersive portfolio interface simulating a futuristic operating system.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-fogang.onrender.com/" },
+        { title: "NEXUS SECURE", type: "CYBER SECURITY", desc: "Network vulnerability analysis tool with real-time dashboard.", stack: "Python / Kali", dep: "Local Host", id_code: "PROJ-002", link: "https://tchinda-fogang.onrender.com/" },
+        { title: "QUANTUM API", type: "BACKEND ARCH", desc: "Highly available micro-services infrastructure for massive processing.", stack: "Node.js / PGSQL", dep: "Docker / AWS", id_code: "PROJ-003", link: "https://tchinda-fogang.onrender.com/" }
+      ]
+    },
+    certs: {
+      title: "Verified_Credentials",
+      subtitle: "ACCREDITATIONS & DIPLOMAS",
+      paginationText: "Page {current} of {total} — {count} certifications",
+      items: [
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Web development fundamentals: HTML, CSS, JS and responsive design.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
+        { title: "Cybersecurity Essentials", issuer: "Cisco Academy", desc: "Fundamental principles of IT security and network protection.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
+        { title: "Fullstack JavaScript", issuer: "Meta Professional", desc: "Mastery of React, Node.js and modern architectures.", image: certImg, link: "https://tchinda-fogang.onrender.com/" }
+      ]
+    },
+    services: {
+      title: "Professional_Services",
+      subtitle: "SOLUTIONS & TECHNICAL EXPERTISE",
+      items: [
+        { title: "Fullstack Development", desc: "Design of modern, reactive, and scalable web applications using latest architectures." },
+        { title: "Audit & Security", desc: "Vulnerability analysis, penetration testing, and digital infrastructure securing." },
+        { title: "System Architecture", desc: "Setup of virtualized environments, Linux server management, and Docker deployment." },
+        { title: "Training & Collaboration", desc: "Knowledge sharing, mentorship and collaboration on open source projects." }
+      ]
+    },
+    contact: {
+      title: "Contact_Protocol",
+      subtitle: "ESTABLISHING_COMMUNICATION_V2.0",
+      sendBtn: "Transmit_Signal",
+      labels: { name: "_Identity_Name", email: "_Access_Email", subject: "_Signal_Subject", msg: "_Transmission_Data" },
+      placeholders: { name: "EG: TCHINDA FOGANG", subject: "COLLABORATION / SECURITY / DEVELOPMENT", msg: "ENTER YOUR MESSAGE HERE..." }
+    },
+    footer: {
+      desc: "Architect of secure and high-performance digital solutions. Dedicated to continuous innovation and system robustness.",
+      cvBtn: "Download_Full_Resume.PDF"
+    }
+  }
+};
+
+const getSkillIcon = (name) => {
+  const n = name.toLowerCase();
+  let iconPath = "";
+  let needsInvert = false; 
+  if (n.includes('html')) iconPath = "html5/html5-original.svg";
+  else if (n.includes('css')) iconPath = "css3/css3-original.svg";
+  else if (n.includes('javascript') || n === 'js') iconPath = "javascript/javascript-original.svg";
+  else if (n.includes('react')) iconPath = "react/react-original.svg";
+  else if (n.includes('node')) iconPath = "nodejs/nodejs-original.svg";
+  else if (n.includes('python')) iconPath = "python/python-original.svg";
+  else if (n.includes('php')) iconPath = "php/php-original.svg";
+  else if (n.includes('java') && !n.includes('script')) iconPath = "java/java-original.svg";
+  else if (n.includes('c++')) iconPath = "cplusplus/cplusplus-original.svg";
+  else if (n.includes('mysql')) iconPath = "mysql/mysql-original.svg";
+  else if (n.includes('postgresql') || n.includes('pgsql')) iconPath = "postgresql/postgresql-original.svg";
+  else if (n.includes('docker')) iconPath = "docker/docker-original.svg";
+  else if (n.includes('linux')) iconPath = "linux/linux-original.svg";
+  else if (n.includes('apache')) iconPath = "apache/apache-original.svg";
+  else if (n.includes('mongodb') || n.includes('mongo')) iconPath = "mongodb/mongodb-original.svg";
+  else if (n.includes('express')) iconPath = "express/express-original.svg";
+  else if (n.includes('django')) iconPath = "django/django-plain.svg";
+  else if (n.includes('flask')) iconPath = "flask/flask-original.svg";
+  else if (n.includes('tailwind')) iconPath = "tailwindcss/tailwindcss-original.svg";
+  else if (n.includes('vite')) iconPath = "vitejs/vitejs-original.svg";
+  else if (n.includes('git')) iconPath = "git/git-original.svg";
+  else if (n.includes('aws') || n.includes('amazon')) iconPath = "amazonwebservices/amazonwebservices-original.svg";
+  else if (n.includes('vs code') || n.includes('vscode')) iconPath = "vscode/vscode-original.svg";
+  else if (n.includes('postman')) iconPath = "postman/postman-original.svg";
+  else if (n.includes('powershell') || n.includes('windows')) iconPath = "powershell/powershell-original.svg";
+  else if (n.includes('github')) { iconPath = "github/github-original.svg"; needsInvert = true; }
+  else if (n.includes('markdown')) { iconPath = "markdown/markdown-original.svg"; needsInvert = true; }
+  else if (n.includes('sql')) { iconPath = "mysql/mysql-original.svg"; }
+
+  if (iconPath) {
+    return (
+      <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${iconPath}`} alt={name}
+        className={`w-4 h-4 object-contain transition-all duration-300 ${needsInvert ? 'invert brightness-200' : 'brightness-100'} group-hover/skill:scale-110`} />
+    );
+  }
+  return <Cpu size={14} className="text-cyan-400" />;
+};
+
+export default function App() {
+  const [activeSection, setActiveSection] = useState('about');
+  const [lang, setLang] = useState('FR');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const t = translations[lang];
+
+  const totalSkills = t.skills.categories.reduce((acc, cat) => acc + cat.skills.length, 0);
+
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formStatus, setFormStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef(null);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormStatus({ type: '', message: '' });
+
+    try {
+      await emailjs.sendForm(
+        'service_74e2dcf',
+        'template_zrthbt4',
+        formRef.current,
+        '9zvhZuCb7lQ5q-4PT'
+      );
+      setFormStatus({ type: 'success', message: lang === 'FR' ? 'Message envoyé avec succès !' : 'Message sent successfully!' });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch {
+      setFormStatus({ type: 'error', message: lang === 'FR' ? 'Erreur lors de l\'envoi.' : 'Failed to send message.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+const [currentCertPage, setCurrentCertPage] = useState(1);
+  const [currentProjPage, setCurrentProjPage] = useState(1);
+  const [currentSkillPage, setCurrentSkillPage] = useState(1);
+  const [currentServicePage, setCurrentServicePage] = useState(1);
+  const itemsPerPage = 6;
+
+  const currentCerts = t.certs.items.slice((currentCertPage - 1) * itemsPerPage, currentCertPage * itemsPerPage);
+  const totalCertPages = Math.ceil(t.certs.items.length / itemsPerPage);
+
+  const currentProjects = t.projects.items.slice((currentProjPage - 1) * itemsPerPage, currentProjPage * itemsPerPage);
+  const totalProjPages = Math.ceil(t.projects.items.length / itemsPerPage);
+
+  const totalSkillPages = t.skills.categories.length;
+  const totalServicePages = t.services.items.length;
+
+  const paginateCerts = (num) => { setCurrentCertPage(num); document.getElementById('certifications')?.scrollIntoView({ behavior: 'smooth' }); };
+  const paginateProjects = (num) => { setCurrentProjPage(num); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); };
+  const paginateSkills = (num) => { setCurrentSkillPage(num); document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }); };
+  const paginateServices = (num) => { setCurrentServicePage(num); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) setActiveSection(entry.target.id); });
+    }, { rootMargin: '-20% 0px -75% 0px' });
+    document.querySelectorAll('section').forEach((section) => { if (section.id) observer.observe(section); });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const skillCards = document.querySelectorAll('#skills .snap-center');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const index = Array.from(skillCards).indexOf(entry.target);
+          if (index !== -1) setCurrentSkillPage(index + 1);
+        }
+      });
+    }, { threshold: 0.5 });
+    skillCards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const serviceCards = document.querySelectorAll('#services .snap-center');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const index = Array.from(serviceCards).indexOf(entry.target);
+          if (index !== -1) setCurrentServicePage(index + 1);
+        }
+      });
+    }, { threshold: 0.5 });
+    serviceCards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <>
+      <CustomCursor />
+      <ParticleBackground />
+      
+      <div className="min-h-screen w-full bg-transparent text-white font-sans selection:bg-cyan-500/30 relative overflow-x-hidden">
+        
+        {/* Background Glows */}
+        <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10">
+          <div className="absolute top-[-10%] left-[-10%] w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-cyan-500/10 blur-[80px] md:blur-[120px] rounded-full"></div>
+          <div className="absolute bottom-[10%] right-[10%] w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-purple-500/10 blur-[80px] md:blur-[120px] rounded-full"></div>
+        </div>
+
+        {/* --- NAVBAR --- */}
+        <nav className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[95%] max-w-7xl z-50">
+              <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-full px-4 md:px-8 py-3 flex items-center justify-between shadow-2xl relative">
+          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+            <div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all">
+              <Terminal size={18} className="text-cyan-400" />
+            </div>
+            <span className="font-bold tracking-tighter text-sm md:text-xl bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+              TCHINDA<span className="text-cyan-400">@portfolio</span>
+            </span>
+          </div>
+
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center gap-8">
+            {t.nav.map((name, i) => {
+              const ids = ["about", "skills", "projects", "certifications", "services", "contacts"];
+              return (
+                <a key={name} href={`#${ids[i]}`} className={`text-[10px] font-bold tracking-[0.25em] transition-all relative group ${activeSection === ids[i] ? 'text-cyan-400' : 'text-gray-400 hover:text-white'}`}>
+                  {name}
+                  {activeSection === ids[i] && <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"></div>}
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-3">
+            <button onClick={() => setLang(lang === 'FR' ? 'EN' : 'FR')} className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-cyan-500/10 transition-all group">
+              <Languages size={14} className="text-cyan-400" />
+              <span className="text-[10px] font-black text-gray-300 tracking-widest">{lang}</span>
+            </button>
+            <button onClick={() => setIsTerminalOpen(true)} className="hidden sm:flex items-center justify-center w-9 h-9 border border-cyan-500/30 hover:border-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/20 rounded-full transition-all cursor-pointer">
+              <Terminal size={16} className="text-cyan-400" />
+            </button>
+            {/* Mobile Menu Toggle */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-cyan-400 hover:bg-white/5 rounded-xl transition-all">
+              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+
+          {/* Mobile Dropdown Menu */}
+          {isMenuOpen && (
+            <div className="absolute top-[110%] left-0 w-full bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl p-4 lg:hidden flex flex-col gap-4 shadow-3xl animate-in slide-in-from-top duration-300">
+               {t.nav.map((name, i) => {
+                const ids = ["about", "skills", "projects", "certifications", "services", "contacts"];
+                return (
+                  <a key={name} href={`#${ids[i]}`} onClick={() => setIsMenuOpen(false)} className={`text-[11px] font-black tracking-widest p-3 rounded-xl transition-all uppercase border border-white/5 ${activeSection === ids[i] ? 'bg-cyan-500/10 text-cyan-400' : 'text-gray-400 hover:bg-white/5'}`}>
+                    {name}
+                  </a>
+                );
+              })}
+              <button onClick={() => { setIsTerminalOpen(true); setIsMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 border border-cyan-500/30 bg-cyan-500/5 py-4 rounded-xl text-[10px] font-black tracking-[0.2em] text-cyan-400 uppercase cursor-pointer">
+                <Terminal size={18} />
+              </button>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* --- TERMINAL MODAL --- */}
+      <AnimatePresence>
+        {isTerminalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            onClick={() => setIsTerminalOpen(false)}
+          >
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-2xl bg-[#0a0a0f] border border-cyan-500/30 rounded-2xl shadow-[0_0_60px_rgba(6,182,212,0.2)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+            <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-b border-cyan-500/20">
+              <div className="flex items-center gap-3">
+                <Terminal size={20} className="text-cyan-400" />
+                <span className="font-bold text-cyan-400 tracking-widest uppercase text-sm">@Portfolio // System_Info</span>
+              </div>
+              <button onClick={() => setIsTerminalOpen(false)} className="p-2 hover:bg-white/10 rounded-lg transition-all">
+                <X size={18} className="text-gray-400" />
+              </button>
+            </div>
+            <div className="p-8 space-y-6">
+              <div className="flex items-center gap-6 pb-6 border-b border-white/10">
+                <img src="https://tchinda-fogang.onrender.com/src/T2.0.png" alt="Profile" className="w-24 h-24 rounded-2xl object-cover border-2 border-cyan-500/30" />
+                <div>
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tight">Tchinda Fogang</h3>
+                  <p className="text-cyan-400 text-xs font-bold tracking-widest uppercase mt-1">{t.job}</p>
+                  <p className="text-gray-500 text-[10px] tracking-widest uppercase mt-2 flex items-center gap-2"><MapPin size={12} /> Yaoundé, CM</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-500/40 transition-all">
+                  <Eye size={24} className="text-cyan-400 mx-auto mb-2" />
+                  <p className="text-3xl font-black text-white">{totalSkills}</p>
+                  <p className="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Compétences</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-purple-500/40 transition-all">
+                  <Code2 size={24} className="text-purple-400 mx-auto mb-2" />
+                  <p className="text-3xl font-black text-white">{t.projects.items.length}</p>
+                  <p className="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Projets</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-emerald-500/40 transition-all">
+                  <Award size={24} className="text-emerald-400 mx-auto mb-2" />
+                  <p className="text-3xl font-black text-white">{t.certs.items.length}</p>
+                  <p className="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Certifications</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-amber-500/40 transition-all">
+                  <Link2 size={24} className="text-amber-400 mx-auto mb-2" />
+                  <p className="text-3xl font-black text-white">5</p>
+                  <p className="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Liens</p>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-white/10">
+                <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-bold">// Liens_Sociaux</p>
+                <div className="flex items-center justify-center gap-4">
+                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Github size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Linkedin size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Twitter size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Instagram size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
+                  <a href="mailto:tchindafogang@example.com" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Mail size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-3 bg-cyan-500/5 border-t border-cyan-500/10 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+              <span className="text-[10px] text-cyan-400 font-mono tracking-widest">SYSTEM_ONLINE // READY_FOR_INPUT</span>
+            </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- MAIN CONTENT --- */}
+      <main className="pt-24 pb-20 px-4 md:px-10 flex flex-col items-center gap-12 md:gap-16">
+        
+        {/* SECTION: ABOUT */}
+        <motion.section
+          id="about"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-7xl bg-white/[0.01] backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl relative text-left"
+        >
+          <div className="h-32 md:h-64 bg-gradient-to-br from-indigo-900/30 via-black to-purple-900/30 relative">
+             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#08080a]"></div>
+          </div>
+
+          <div className="px-6 md:px-16 pb-12 md:pb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 -mt-16 md:-mt-32 relative z-10">
+              <div className="lg:col-span-4 flex flex-col items-center lg:items-start space-y-6">
+                <div className="w-48 h-48 md:w-80 md:h-80 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] border-[#08080a] overflow-hidden shadow-2xl group relative">
+                  <img src="https://tchinda-fogang.onrender.com/src/T2.0.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Profile" />
+                </div>
+                <div className="w-full bg-white/[0.02] backdrop-blur-3xl p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-xl">
+                   <div className="flex flex-col space-y-4">
+                      <div className="flex items-center gap-3 text-cyan-400 font-bold text-[10px] md:text-xs uppercase tracking-widest">
+                        <Cpu size={16} /> {t.job.split(',')[0]}
+                      </div>
+                      <div className="flex justify-center lg:justify-start gap-3 md:gap-4 p-2">
+                        {[Twitter, Linkedin, Github, Instagram].map((Icon, i) => (
+                          <div key={i} className="p-2 md:p-3 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-400 rounded-xl transition-all cursor-pointer text-gray-400">
+                            <Icon size={18} />
+                          </div>
+                        ))}
+                      </div>
+                   </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-8 flex flex-col space-y-6 md:space-y-8 pt-2 lg:pt-0">
+                <div className="text-center lg:text-left">
+                  <h1 className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-gradient-to-r from-white via-white to-gray-500 bg-clip-text text-transparent uppercase">Tchinda Fogang</h1>
+                  <p className="text-gray-500 font-medium tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs uppercase mt-2">{t.job}</p>
+                </div>
+                <div className="bg-white/[0.03] p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 shadow-inner relative group">
+                  <h3 className="text-cyan-500 text-[9px] md:text-[10px] font-black uppercase tracking-[0.5em] mb-4 md:mb-6 flex items-center gap-3"><User2 size={14}/> {t.about.title}</h3>
+                  <div className="space-y-4 text-gray-300 text-xs md:text-base leading-relaxed font-normal">
+                    {t.about.bio.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+                  </div>
+                  <div className="mt-6 md:mt-8 flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4">
+                    <button className="flex-1 lg:flex-none px-5 md:px-6 py-2.5 md:py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-black text-[9px] md:text-[10px] tracking-widest transition-all uppercase shadow-lg shadow-cyan-500/20">{t.about.hire}</button>
+                    <button className="flex-1 lg:flex-none px-5 md:px-6 py-2.5 md:py-3 bg-white/5 hover:bg-white/10 rounded-xl font-black text-[9px] md:text-[10px] tracking-widest border border-white/10 transition-all uppercase">{t.about.cv}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* SECTION: SKILLS */}
+        <SectionContainer id="skills" title={t.skills.title} subtitle={t.skills.subtitle}>
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide pb-4">
+            {t.skills.categories.map((cat, i) => (
+              <div key={i} className="min-w-[85vw] md:min-w-0 snap-center bg-white/[0.02] backdrop-blur-md p-6 rounded-3xl border border-white/5 hover:border-cyan-500/30 transition-all group relative overflow-hidden flex flex-col h-full text-left">
+                <div className="flex items-center gap-4 mb-4 relative z-10">
+                  <div className="p-3 bg-white/5 rounded-2xl border border-white/10 group-hover:border-cyan-500/40 group-hover:bg-cyan-500/10 transition-all">
+                    {i === 0 ? <Layout size={22} className="text-cyan-400" /> : i === 1 ? <Server size={22} className="text-cyan-400" /> : i === 2 ? <Database size={22} className="text-cyan-400" /> : i === 3 ? <ShieldAlert size={22} className="text-cyan-400" /> : <Wrench size={22} className="text-cyan-400" />}
+                  </div>
+                  <div>
+                    <h4 className="font-black text-[11px] tracking-[0.2em] text-white/90 uppercase">{cat.title}</h4>
+                    {cat.desc && <p className="text-[9px] text-gray-500 font-medium mt-1">{cat.desc}</p>}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-auto relative z-10">
+                  {cat.skills.map((skill, index) => (
+                    <div key={index} className="flex items-center gap-2.5 px-3 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-white/20 transition-all group/skill h-9">
+                      <div className="w-4 h-4 flex items-center justify-center">{getSkillIcon(skill)}</div>
+                      <span className="text-[10px] font-black text-gray-500 group-hover/skill:text-cyan-400 uppercase tracking-tighter transition-colors">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="hidden lg:flex bg-gradient-to-br from-cyan-500/5 to-purple-500/5 backdrop-blur-md p-6 rounded-3xl border border-white/5 items-center justify-center border-dashed">
+               <div className="text-center"><Zap size={24} className="text-cyan-400 mb-3 animate-pulse" /><p className="text-[10px] font-black tracking-widest text-cyan-500 uppercase">System_Active</p></div>
+            </div>
+          </div>
+
+          {/* PAGINATION SKILLS */}
+          <div className="mt-8 flex flex-col items-center gap-4 md:hidden">
+            <div className="flex items-center gap-2">
+              {t.skills.categories.map((_, i) => (
+                <button key={i} onClick={() => paginateSkills(i + 1)} className={`w-8 h-8 rounded-xl font-bold text-xs transition-all duration-300 ${currentSkillPage === i + 1 ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]' : 'border border-white/10 text-gray-500 hover:border-white/30'}`}>
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <p className="text-gray-500 text-[10px] font-medium tracking-wider uppercase opacity-70">
+              {lang === 'FR' ? `Compétence ${currentSkillPage} sur ${totalSkillPages}` : `Skill ${currentSkillPage} of ${totalSkillPages}`}
+            </p>
+          </div>
+        </SectionContainer>
+
+        {/* --- SECTION PROJECTS --- */}
+        <SectionContainer id="projects" title={t.projects.title} subtitle={t.projects.subtitle}>
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide pb-6 md:pb-0 text-left">
+            {currentProjects.map((proj, i) => (
+              <div key={i} className="min-w-[85vw] md:min-w-0 snap-center group relative bg-[#070708] border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-cyan-500/40 flex flex-col shadow-2xl">
+                <div className="flex items-center justify-between px-5 py-3 bg-white/5 border-b border-white/5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></div>
+                    <span className="text-[10px] font-mono text-cyan-400/80 tracking-widest uppercase italic">{proj.id_code}</span>
+                  </div>
+                </div>
+                <div className="relative h-44 w-full overflow-hidden bg-black">
+                  <img src={`https://images.unsplash.com/photo-${1614850523296 + i}?w=800&q=80`} className="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-70 group-hover:scale-110 transition-all duration-1000" alt={proj.title} />
+                  <div className="absolute bottom-3 left-5"><span className="text-[10px] font-black px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 uppercase tracking-[0.2em] backdrop-blur-md">{proj.type}</span></div>
+                </div>
+                <div className="p-6 flex flex-col flex-grow space-y-5">
+                  <div className="space-y-3">
+                    <h4 className="text-lg font-black text-white uppercase tracking-wider group-hover:text-cyan-400 transition-colors">{proj.title}</h4>
+                    <p className="text-[11px] text-gray-400 font-mono leading-relaxed line-clamp-3">{proj.desc}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 py-4 border-y border-white/5">
+                    <div className="flex flex-col gap-1"><span className="text-[9px] text-gray-600 uppercase font-black tracking-widest">_Stack</span><span className="text-[10px] text-gray-300 font-mono truncate uppercase">{proj.stack}</span></div>
+                    <div className="flex flex-col border-l border-white/5 pl-4 gap-1"><span className="text-[9px] text-gray-600 uppercase font-black tracking-widest">_Deployment</span><span className="text-[10px] text-gray-300 font-mono truncate uppercase">{proj.dep}</span></div>
+                  </div>
+                  <a href={proj.link || "#"} target="_blank" rel="noopener noreferrer" className="group/btn relative w-full py-4 overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-cyan-500/50 hover:bg-cyan-500/5 flex items-center justify-center gap-3 uppercase text-[10px] font-black text-gray-300 group-hover/btn:text-cyan-400 tracking-[0.4em]">
+                    {t.projects.btn} <ExternalLink size={14} />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* PAGINATION PROJECTS */}
+          {t.projects.items.length > itemsPerPage && (
+            <div className="mt-8 md:mt-12 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <button onClick={() => currentProjPage > 1 && paginateProjects(currentProjPage - 1)} disabled={currentProjPage === 1} className={`p-2 md:p-3 rounded-xl border border-white/10 transition-all ${currentProjPage === 1 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-white/5 text-gray-400'}`}><ChevronLeft size={18} /></button>
+                {Array.from({ length: totalProjPages }, (_, i) => i + 1).map((num) => (
+                  <button key={num} onClick={() => paginateProjects(num)} className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl font-bold text-xs transition-all duration-300 ${currentProjPage === num ? 'bg-[#00ff9d] text-black shadow-[0_0_20px_rgba(0,255,157,0.4)]' : 'border border-white/10 text-gray-500 hover:border-white/30'}`}>{num}</button>
+                ))}
+                <button onClick={() => currentProjPage < totalProjPages && paginateProjects(currentProjPage + 1)} disabled={currentProjPage === totalProjPages} className={`p-2 md:p-3 rounded-xl border border-white/10 transition-all ${currentProjPage === totalProjPages ? 'opacity-20 cursor-not-allowed' : 'hover:bg-white/5 text-gray-400'}`}><ChevronRight size={18} /></button>
+              </div>
+              <p className="text-gray-500 text-[10px] font-medium tracking-wider uppercase opacity-70">
+                {t.projects.paginationText.replace('{current}', currentProjPage).replace('{total}', totalProjPages).replace('{count}', t.projects.items.length)}
+              </p>
+            </div>
+          )}
+        </SectionContainer>
+
+        {/* --- SECTION CERTIFICATIONS --- */}
+        <SectionContainer id="certifications" title={t.certs.title} subtitle={t.certs.subtitle}>
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide pb-6 md:pb-0 text-left">
+            {currentCerts.map((cert, i) => (
+              <div key={i} className="min-w-[85vw] md:min-w-0 snap-center group flex flex-col bg-[#0d1117] border border-white/5 rounded-2xl overflow-hidden shadow-2xl transition-all hover:border-cyan-500/20">
+                <div className="h-40 bg-black relative overflow-hidden flex items-center justify-center border-b border-white/5">
+                  <img src={cert.image || certImg} alt={cert.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent opacity-60"></div>
+                </div>
+                <div className="p-5 flex flex-col flex-grow">
+                  <div className="flex items-center gap-3 mb-4">
+                     <div className="p-2 bg-[#16222a] rounded-full text-cyan-500 border border-white/5"><Monitor size={14} /></div>
+                     <div className="flex flex-col"><span className="text-[9px] text-gray-500 font-bold uppercase tracking-tight">Issuer</span><span className="text-xs font-black text-white tracking-wide uppercase">{cert.issuer || "SYSTEM_AUTH"}</span></div>
+                  </div>
+                  <h4 className="text-lg font-black text-white mb-2 tracking-tight group-hover:text-cyan-400 transition-colors uppercase">{cert.title}</h4>
+                  <p className="text-[11px] text-gray-400 font-mono leading-relaxed opacity-80 mb-6 line-clamp-2">{cert.desc}</p>
+                  <div className="mt-auto pt-4 border-t border-white/5">
+                     <a href={cert.link || "#"} target='_blank' rel="noopener noreferrer" className="inline-block px-3 py-1.5 bg-[#1b2c24] border border-[#2d4d3e] rounded text-[#4ade80] text-[9px] font-black uppercase tracking-widest hover:bg-[#2d4d3e] hover:text-white transition-all">Verify_Now</a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* PAGINATION CERTS */}
+          {t.certs.items.length > itemsPerPage && (
+            <div className="mt-8 md:mt-12 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <button onClick={() => currentCertPage > 1 && paginateCerts(currentCertPage - 1)} disabled={currentCertPage === 1} className={`p-2 md:p-3 rounded-xl border border-white/10 transition-all ${currentCertPage === 1 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-white/5 text-gray-400'}`}><ChevronLeft size={18} /></button>
+                {Array.from({ length: totalCertPages }, (_, i) => i + 1).map((num) => (
+                  <button key={num} onClick={() => paginateCerts(num)} className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl font-bold text-xs transition-all duration-300 ${currentCertPage === num ? 'bg-[#00ff9d] text-black shadow-[0_0_20px_rgba(0,255,157,0.4)]' : 'border border-white/10 text-gray-500 hover:border-white/30'}`}>{num}</button>
+                ))}
+                <button onClick={() => currentCertPage < totalCertPages && paginateCerts(currentCertPage + 1)} disabled={currentCertPage === totalCertPages} className={`p-2 md:p-3 rounded-xl border border-white/10 transition-all ${currentCertPage === totalCertPages ? 'opacity-20 cursor-not-allowed' : 'hover:bg-white/5 text-gray-400'}`}><ChevronRight size={18} /></button>
+              </div>
+              <p className="text-gray-500 text-[10px] font-medium tracking-wider uppercase opacity-70">
+                {t.certs.paginationText.replace('{current}', currentCertPage).replace('{total}', totalCertPages).replace('{count}', t.certs.items.length)}
+              </p>
+            </div>
+          )}
+        </SectionContainer>
+
+        {/* SECTION SERVICES */}
+        <SectionContainer id="services" title={t.services.title} subtitle={t.services.subtitle}>
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide pb-4 text-left">
+            {t.services.items.map((service, i) => (
+              <div key={i} className="min-w-[85vw] md:min-w-0 snap-center group relative p-8 bg-[#0a0a0c] border border-white/5 rounded-[2rem] hover:border-cyan-500/40 transition-all duration-500 overflow-hidden">
+                <div className="relative z-10">
+                  <div className="mb-6 text-cyan-400 group-hover:text-white transition-all">{i === 0 ? <Globe size={28} /> : i === 1 ? <ShieldAlert size={28} /> : i === 2 ? <Server size={28} /> : <User2 size={28} />}</div>
+                  <h4 className="text-lg font-black text-white uppercase tracking-tighter mb-4">{service.title}</h4>
+                  <p className="text-xs text-gray-400 leading-relaxed font-medium uppercase">{service.desc}</p>
+                </div>
+                <span className="absolute bottom-4 right-8 text-4xl font-black text-white/[0.02] group-hover:text-cyan-500/5">0{i+1}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* PAGINATION SERVICES */}
+          <div className="mt-8 flex flex-col items-center gap-4 md:hidden">
+            <div className="flex items-center gap-2">
+              {t.services.items.map((_, i) => (
+                <button key={i} onClick={() => paginateServices(i + 1)} className={`w-8 h-8 rounded-xl font-bold text-xs transition-all duration-300 ${currentServicePage === i + 1 ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]' : 'border border-white/10 text-gray-500 hover:border-white/30'}`}>
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <p className="text-gray-500 text-[10px] font-medium tracking-wider uppercase opacity-70">
+              {lang === 'FR' ? `Service ${currentServicePage} sur ${totalServicePages}` : `Service ${currentServicePage} of ${totalServicePages}`}
+            </p>
+          </div>
+        </SectionContainer>
+
+        {/* SECTION CONTACT */}
+        <SectionContainer id="contacts" title={t.contact.title} subtitle={t.contact.subtitle}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 text-left">
+            <div className="lg:col-span-7">
+              <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-8 backdrop-blur-md relative overflow-hidden group h-full">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">{t.contact.labels.name}</label>
+                      <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder={t.contact.placeholders.name} className="w-full bg-black/60 border border-white/5 rounded-xl px-5 py-4 text-xs font-mono focus:outline-none focus:border-cyan-500/40 transition-all text-gray-300" required />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">{t.contact.labels.email}</label>
+                      <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="NOM@DOMAINE.COM" className="w-full bg-black/60 border border-white/5 rounded-xl px-5 py-4 text-xs font-mono focus:outline-none focus:border-cyan-500/40 transition-all text-gray-300" required />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">{t.contact.labels.subject}</label>
+                    <input type="text" name="subject" value={formData.subject} onChange={handleInputChange} placeholder={t.contact.placeholders.subject} className="w-full bg-black/60 border border-white/5 rounded-xl px-5 py-4 text-xs font-mono focus:outline-none focus:border-cyan-500/40 transition-all text-gray-300" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">{t.contact.labels.msg}</label>
+                    <textarea name="message" value={formData.message} onChange={handleInputChange} rows={5} placeholder={t.contact.placeholders.msg} className="w-full bg-black/60 border border-white/5 rounded-xl px-5 py-4 text-xs font-mono focus:outline-none focus:border-cyan-500/40 transition-all text-gray-300 resize-none" required></textarea>
+                  </div>
+                  {formStatus.message && (
+                    <div className={`p-4 rounded-xl text-xs font-bold ${formStatus.type === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                      {formStatus.message}
+                    </div>
+                  )}
+                  <button type="submit" disabled={isSubmitting} className="px-10 py-4 bg-cyan-600/90 hover:bg-cyan-500 rounded-xl font-black text-[10px] tracking-[0.4em] text-white transition-all uppercase shadow-lg shadow-cyan-900/20 flex items-center gap-2 disabled:opacity-50">
+                    {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> ENVOI...</> : t.contact.sendBtn}
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between h-full group">
+                <div className="space-y-12">
+                  <h4 className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.4em]">Secure_Channels</h4>
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-5 group/item">
+                      <div className="p-4 bg-cyan-500/5 border border-white/5 rounded-2xl group-hover/item:border-cyan-500/40 transition-all"><Mail className="text-cyan-400" size={20} /></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Email</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">tchindafogang@example.com</p></div>
+                    </div>
+                    <div className="flex items-center gap-5 group/item">
+                      <div className="p-4 bg-emerald-500/5 border border-white/5 rounded-2xl group-hover/item:border-emerald-500/40 transition-all"><MapPin className="text-emerald-400" size={20} /></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Base_Loc</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">Yaoundé, CM</p></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 mt-12">
+                    {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (
+                      <a key={i} href="#" className="flex items-center justify-center p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={20} className="text-gray-500 group-hover:text-cyan-400" /></a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </SectionContainer>
+      </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="w-full bg-[#08080a] border-t border-white/5 pt-20 pb-10 px-4 md:px-10 relative text-left">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 relative z-10">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2"><div className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/20"><Terminal size={18} className="text-cyan-400" /></div><span className="font-bold tracking-tighter text-lg">TCHINDA<span className="text-cyan-400">.portfolio</span></span></div>
+            <p className="text-[11px] text-gray-500 font-medium leading-relaxed tracking-wide uppercase italic">{t.footer.desc}</p>
+          </div>
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-l-2 border-cyan-500 pl-3">_Navigation</h4>
+            <ul className="space-y-3">{t.nav.map((item, i) => (<li key={item}><a href={`#${["about", "skills", "projects", "certifications", "services", "contacts"][i]}`} className="text-[10px] font-bold text-gray-500 hover:text-cyan-400 transition-colors uppercase tracking-widest flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-cyan-500 transition-all"></span>{item}</a></li>))}</ul>
+          </div>
+          <div className="space-y-6 md:col-span-2">
+            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-l-2 border-emerald-500 pl-3">_Social_Network</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (<a key={i} href="#" className="flex items-center justify-center p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={18} className="text-gray-500 group-hover:text-cyan-400" /></a>))}
+            </div>
+            <button className="w-full py-4 bg-white/[0.03] border border-white/10 rounded-xl text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] hover:bg-white/5 transition-all mt-4">{t.footer.cvBtn}</button>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto pt-10 border-t border-white/5 text-center"><span className="text-gray-600 text-[10px] font-bold tracking-[0.6em] uppercase">© 2026 TCHINDA_SYSTEMS | ALL_RIGHTS_RESERVED</span></div>
+      </footer>
+      </div>
+    </>
+  );
+}
+
+function SectionContainer({ children, id, title, subtitle }) {
+  return (
+    <motion.section
+      id={id}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-7xl bg-white/[0.01] backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] border border-white/5 shadow-2xl p-6 md:p-16 relative overflow-hidden group mb-16"
+    >
+      <div className="absolute top-6 right-8 md:top-8 md:right-12 flex gap-2">
+         <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/10 group-hover:bg-cyan-500/30 transition-colors"></div>
+         <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/10 group-hover:bg-cyan-500/30 transition-colors"></div>
+      </div>
+      <div className="flex flex-col mb-10 md:mb-16 text-center md:text-left">
+        <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-2">{title}</h2>
+        <p className="text-gray-500 text-[9px] md:text-[10px] tracking-[0.4em] font-bold uppercase">{subtitle}</p>
+        <div className="w-12 md:w-16 h-1 bg-cyan-500 mt-4 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)] mx-auto md:mx-0"></div>
+      </div>
+      {children}
+    </motion.section>
+  );
+}
