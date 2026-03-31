@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Github, Linkedin, Instagram, Twitter, Terminal, ExternalLink, 
+  Github, Linkedin, Instagram, Twitter, Facebook, Terminal, ExternalLink, 
   User2, Cpu, GraduationCap, Mail, Globe, Server, ShieldAlert, 
   Wrench, Monitor, MapPin, Languages, Zap, Layout, Database,
   ChevronLeft, ChevronRight, Menu, X, Loader2, Eye, Code2, Award, Link2
@@ -120,9 +120,7 @@ const translations = {
 btn: "Project_Live",
       paginationText: "Page {current} sur {total} — {count} projets",
       items: [
-        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Interface de portfolio immersive simulant un système d'exploitation futuriste.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-fogang.onrender.com/" },
-        { title: "NEXUS SECURE", type: "CYBER SECURITY", desc: "Outil d'analyse de vulnérabilités réseau avec tableau de bord en temps réel.", stack: "Python / Kali", dep: "Local Host", id_code: "PROJ-002", link: "https://tchinda-fogang.onrender.com/" },
-        { title: "QUANTUM API", type: "BACKEND ARCH", desc: "Infrastructure micro-services hautement disponible pour traitement massif.", stack: "Node.js / PGSQL", dep: "Docker / AWS", id_code: "PROJ-003", link: "https://tchinda-fogang.onrender.com/" }
+        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Interface de portfolio immersive simulant un système d'exploitation futuriste.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-os.onrender.com/" }
       ]
     },
 certs: {
@@ -130,9 +128,7 @@ certs: {
       subtitle: "ACCRÉDITATIONS & DIPLÔMES",
       paginationText: "Page {current} sur {total} — {count} certifications",
       items: [
-        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Fondamentaux du développement web: HTML, CSS, JS et responsive design.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
-        { title: "Cybersecurity Essentials", issuer: "Cisco Academy", desc: "Principes fondamentaux de la sécurité informatique et protection des réseaux.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
-        { title: "Fullstack JavaScript", issuer: "Meta Professional", desc: "Maîtrise de React, Node.js et architectures modernes.", image: certImg, link: "https://tchinda-fogang.onrender.com/" }
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Fondamentaux du développement web: HTML, CSS, JS et responsive design.", image: certImg, link: "https://www.coursera.org/account/accomplishments/verify/YSFMHPJLFWQ8" }
       ]
     },
     services: {
@@ -187,9 +183,7 @@ certs: {
       btn: "Project_Live",
       paginationText: "Page {current} of {total} — {count} projects",
       items: [
-        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Immersive portfolio interface simulating a futuristic operating system.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-fogang.onrender.com/" },
-        { title: "NEXUS SECURE", type: "CYBER SECURITY", desc: "Network vulnerability analysis tool with real-time dashboard.", stack: "Python / Kali", dep: "Local Host", id_code: "PROJ-002", link: "https://tchinda-fogang.onrender.com/" },
-        { title: "QUANTUM API", type: "BACKEND ARCH", desc: "Highly available micro-services infrastructure for massive processing.", stack: "Node.js / PGSQL", dep: "Docker / AWS", id_code: "PROJ-003", link: "https://tchinda-fogang.onrender.com/" }
+        { title: "TCHINDA-OS V1", type: "SYSTEM DESIGN", desc: "Immersive portfolio interface simulating a futuristic operating system.", stack: "React / Tailwind", dep: "Vercel", id_code: "PROJ-001", link: "https://tchinda-os.onrender.com/" }
       ]
     },
     certs: {
@@ -197,9 +191,7 @@ certs: {
       subtitle: "ACCREDITATIONS & DIPLOMAS",
       paginationText: "Page {current} of {total} — {count} certifications",
       items: [
-        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Web development fundamentals: HTML, CSS, JS and responsive design.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
-        { title: "Cybersecurity Essentials", issuer: "Cisco Academy", desc: "Fundamental principles of IT security and network protection.", image: certImg, link: "https://tchinda-fogang.onrender.com/" },
-        { title: "Fullstack JavaScript", issuer: "Meta Professional", desc: "Mastery of React, Node.js and modern architectures.", image: certImg, link: "https://tchinda-fogang.onrender.com/" }
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Web development fundamentals: HTML, CSS, JS and responsive design.", image: certImg, link: "https://www.coursera.org/account/accomplishments/verify/YSFMHPJLFWQ8" }
       ]
     },
     services: {
@@ -496,20 +488,17 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
               <div className="pt-4 border-t border-white/10">
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-bold">// Liens_Sociaux</p>
                 <div className="flex items-center justify-center gap-4">
+                  <a href="mailto:tchindafogang@example.com" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Mail size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
                   <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
                     <Github size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
                   <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
                     <Linkedin size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Twitter size={24} className="text-gray-400 group-hover:text-cyan-400" />
-                  </a>
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Instagram size={24} className="text-gray-400 group-hover:text-cyan-400" />
-                  </a>
-                  <a href="mailto:tchindafogang@example.com" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Mail size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                    <Facebook size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
                 </div>
               </div>
@@ -551,7 +540,7 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
                         <Cpu size={16} /> {t.job.split(',')[0]}
                       </div>
                       <div className="flex justify-center lg:justify-start gap-3 md:gap-4 p-2">
-                        {[Twitter, Linkedin, Github, Instagram].map((Icon, i) => (
+                        {[Mail, Linkedin, Github, Facebook,].map((Icon, i) => (
                           <div key={i} className="p-2 md:p-3 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-400 rounded-xl transition-all cursor-pointer text-gray-400">
                             <Icon size={18} />
                           </div>
@@ -789,15 +778,15 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
                   <div className="space-y-8">
                     <div className="flex items-center gap-5 group/item">
                       <div className="p-4 bg-cyan-500/5 border border-white/5 rounded-2xl group-hover/item:border-cyan-500/40 transition-all"><Mail className="text-cyan-400" size={20} /></div>
-                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Email</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">tchindafogang@example.com</p></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Email</p><p className="text-xs font-black text-gray-300 tracking-tighter">tchindah2.0@example.com</p></div>
                     </div>
                     <div className="flex items-center gap-5 group/item">
                       <div className="p-4 bg-emerald-500/5 border border-white/5 rounded-2xl group-hover/item:border-emerald-500/40 transition-all"><MapPin className="text-emerald-400" size={20} /></div>
-                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Base_Loc</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">Yaoundé, CM</p></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Base_Loc</p><p className="text-xs font-black text-gray-300 tracking-tighter">Yaoundé, CM</p></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-12">
-                    {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (
+                    {[Mail, Github, Linkedin, Facebook].map((Icon, i) => (
                       <a key={i} href="#" className="flex items-center justify-center p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={20} className="text-gray-500 group-hover:text-cyan-400" /></a>
                     ))}
                   </div>
@@ -821,9 +810,9 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
           </div>
           <div className="space-y-6 md:col-span-2">
             <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-l-2 border-emerald-500 pl-3">_Social_Network</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (<a key={i} href="#" className="flex items-center justify-center p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={18} className="text-gray-500 group-hover:text-cyan-400" /></a>))}
-            </div>
+            </div> */}
             <button className="w-full py-4 bg-white/[0.03] border border-white/10 rounded-xl text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] hover:bg-white/5 transition-all mt-4">{t.footer.cvBtn}</button>
           </div>
         </div>

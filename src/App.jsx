@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Github, Linkedin, Instagram, Twitter, Terminal, ExternalLink, 
+  Github, Linkedin, Instagram, Twitter, Facebook, Terminal, ExternalLink, 
   User2, Cpu, GraduationCap, Mail, Globe, Server, ShieldAlert, 
   Wrench, Monitor, MapPin, Languages, Zap, Layout, Database,
   ChevronLeft, ChevronRight, Menu, X, Loader2, Eye, Code2, Award, Link2
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const certImg = "https://s3.amazonaws.com/coursera_assets/meta_images/generated/CERTIFICATE_LANDING_PAGE/CERTIFICATE_LANDING_PAGE~YSFMHPJLFWQ8/CERTIFICATE_LANDING_PAGE~YSFMHPJLFWQ8.jpeg";
 
@@ -128,7 +129,7 @@ certs: {
       subtitle: "ACCRÉDITATIONS & DIPLÔMES",
       paginationText: "Page {current} sur {total} — {count} certifications",
       items: [
-        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Fondamentaux du développement web: HTML, CSS, JS et responsive design.", image: certImg, link: "" }
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Fondamentaux du développement web: HTML, CSS, JS et responsive design.", image: certImg, link: "https://www.coursera.org/account/accomplishments/verify/YSFMHPJLFWQ8" }
       ]
     },
     services: {
@@ -191,7 +192,7 @@ certs: {
       subtitle: "ACCREDITATIONS & DIPLOMAS",
       paginationText: "Page {current} of {total} — {count} certifications",
       items: [
-        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Web development fundamentals: HTML, CSS, JS and responsive design.", image: certImg, link: "" }
+        { title: "Web Dev Basic", issuer: "Coursera / Google", desc: "Web development fundamentals: HTML, CSS, JS and responsive design.", image: certImg, link: "https://www.coursera.org/account/accomplishments/verify/YSFMHPJLFWQ8" }
       ]
     },
     services: {
@@ -488,20 +489,17 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
               <div className="pt-4 border-t border-white/10">
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-bold">// Liens_Sociaux</p>
                 <div className="flex items-center justify-center gap-4">
+                  <a href="mailto:tchindafogang@example.com" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Mail size={24} className="text-gray-400 group-hover:text-cyan-400" />
+                  </a>
                   <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
                     <Github size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
                   <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
                     <Linkedin size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Twitter size={24} className="text-gray-400 group-hover:text-cyan-400" />
-                  </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Instagram size={24} className="text-gray-400 group-hover:text-cyan-400" />
-                  </a>
-                  <a href="mailto:tchindafogang@example.com" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
-                    <Mail size={24} className="text-gray-400 group-hover:text-cyan-400" />
+<a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all group">
+                    <Facebook size={24} className="text-gray-400 group-hover:text-cyan-400" />
                   </a>
                 </div>
               </div>
@@ -543,7 +541,7 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
                         <Cpu size={16} /> {t.job.split(',')[0]}
                       </div>
                       <div className="flex justify-center lg:justify-start gap-3 md:gap-4 p-2">
-                        {[Twitter, Linkedin, Github, Instagram].map((Icon, i) => (
+                        {[Mail, Linkedin, Github, Facebook,].map((Icon, i) => (
                           <div key={i} className="p-2 md:p-3 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-400 rounded-xl transition-all cursor-pointer text-gray-400">
                             <Icon size={18} />
                           </div>
@@ -781,15 +779,15 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
                   <div className="space-y-8">
                     <div className="flex items-center gap-5 group/item">
                       <div className="p-4 bg-cyan-500/5 border border-white/5 rounded-2xl group-hover/item:border-cyan-500/40 transition-all"><Mail className="text-cyan-400" size={20} /></div>
-                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Email</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">tchindafogang@example.com</p></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Email</p><p className="text-xs font-black text-gray-300 tracking-tighter">tchindah2.0@example.com</p></div>
                     </div>
                     <div className="flex items-center gap-5 group/item">
                       <div className="p-4 bg-emerald-500/5 border border-white/5 rounded-2xl group-hover/item:border-emerald-500/40 transition-all"><MapPin className="text-emerald-400" size={20} /></div>
-                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Base_Loc</p><p className="text-xs font-black text-gray-300 uppercase tracking-tighter">Yaoundé, CM</p></div>
+                      <div className="text-left"><p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">_Base_Loc</p><p className="text-xs font-black text-gray-300 tracking-tighter">Yaoundé, CM</p></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-12">
-                    {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (
+                    {[Mail, Github, Linkedin, Facebook].map((Icon, i) => (
                       <a key={i} href="#" className="flex items-center justify-center p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={20} className="text-gray-500 group-hover:text-cyan-400" /></a>
                     ))}
                   </div>
@@ -812,11 +810,11 @@ const [currentCertPage, setCurrentCertPage] = useState(1);
             <ul className="space-y-3">{t.nav.map((item, i) => (<li key={item}><a href={`#${["about", "skills", "projects", "certifications", "services", "contacts"][i]}`} className="text-[10px] font-bold text-gray-500 hover:text-cyan-400 transition-colors uppercase tracking-widest flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-cyan-500 transition-all"></span>{item}</a></li>))}</ul>
           </div>
           <div className="space-y-6 md:col-span-2">
-            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-l-2 border-emerald-500 pl-3">_Social_Network</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[Linkedin, Github, Twitter, Instagram].map((Icon, i) => (<a key={i} href="#" className="flex items-center justify-center p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/20 transition-all group"><Icon size={18} className="text-gray-500 group-hover:text-cyan-400" /></a>))}
+            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-l-2 border-emerald-500 pl-3">_Quick_Link</h4>
+            <div className="grid grid-cols-2 gap-3">
+              {/* <button className="py-4 bg-white/[0.03] border border-white/10 rounded-xl text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] hover:bg-white/5 transition-all">{t.footer.cvBtn}</button> */}
+              <Link to="/content" className="py-4 bg-white/[0.03] border border-white/10 rounded-xl text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-center">Content_Page →</Link>
             </div>
-            <button className="w-full py-4 bg-white/[0.03] border border-white/10 rounded-xl text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] hover:bg-white/5 transition-all mt-4">{t.footer.cvBtn}</button>
           </div>
         </div>
         <div className="max-w-7xl mx-auto pt-10 border-t border-white/5 text-center"><span className="text-gray-600 text-[10px] font-bold tracking-[0.6em] uppercase">© 2026 TCHINDA_SYSTEMS | ALL_RIGHTS_RESERVED</span></div>
