@@ -6,7 +6,6 @@ export interface Project {
   githubUrl?: string;
   demoUrl?: string;
   category: "Web" | "Mobile" | "Fullstack" | "Impact Social";
-  featured: boolean;
 }
 
 export interface Skill {

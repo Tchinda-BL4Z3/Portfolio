@@ -120,7 +120,7 @@ export default function Blog() {
       const data = await res.json();
       setPosts(data);
     } catch (err: any) {
-      console.error("Fetch blog failed, using fallback static articles:", err);
+      if (import.meta.env.DEV) console.error("Fetch blog failed, using fallback static articles:", err);
       setPosts(DEFAULT_FALLBACK_POSTS);
     } finally {
       setLoading(false);
@@ -140,7 +140,7 @@ export default function Blog() {
         return;
       }
     } catch (err) {
-      console.error("Failed to like post via API, falling back to local update:", err);
+      if (import.meta.env.DEV) console.error("Failed to like post via API, falling back to local update:", err);
     }
     // Local fallback update
     setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: p.likes + 1 } : p));
@@ -177,7 +177,7 @@ export default function Blog() {
         return;
       }
     } catch (err) {
-      console.error("Failed to comment via API, falling back to local update:", err);
+      if (import.meta.env.DEV) console.error("Failed to comment via API, falling back to local update:", err);
     } finally {
       setSubmittingComment(false);
     }
@@ -228,7 +228,7 @@ export default function Blog() {
         return;
       }
     } catch (err) {
-      console.error("Failed to compile new post via API, falling back to local update:", err);
+      if (import.meta.env.DEV) console.error("Failed to compile new post via API, falling back to local update:", err);
     } finally {
       setSubmittingPost(false);
     }
@@ -374,6 +374,7 @@ export default function Blog() {
                   setCommentText("");
                 }}
                 className="absolute top-4 right-4 p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-full border border-slate-150 hover:text-slate-900 transition-colors cursor-pointer"
+                aria-label={isFr ? "Fermer l'article" : "Close article"}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -519,7 +520,8 @@ export default function Blog() {
                 <button
                   onClick={() => setIsCreatorOpen(false)}
                   className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 rounded-full cursor-pointer transition-colors"
-                >
+                aria-label={isFr ? "Fermer l'éditeur" : "Close editor"}
+              >
                   <X className="w-4 h-4" />
                 </button>
               </div>

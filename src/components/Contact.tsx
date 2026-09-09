@@ -38,7 +38,7 @@ export default function Contact() {
       setSubject("");
       setMessage("");
     } catch (err) {
-      console.error("Contact submission failed:", err);
+      if (import.meta.env.DEV) console.error("Contact submission failed:", err);
       setIsError(true);
     } finally {
       setIsSubmitting(false);

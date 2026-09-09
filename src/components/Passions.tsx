@@ -330,7 +330,7 @@ export default function Passions() {
                       <div
                         key={actualIdx}
                         onClick={() => setLightboxIndex(actualIdx)}
-                        className={`group/gallery relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 bg-slate-900 cursor-pointer shadow-sm hover:border-teal-500 dark:hover:border-[#7cedeb] hover:shadow-xl transition-all duration-350 shrink-0 snap-center w-[84vw] max-w-[320px] h-[240px] sm:w-auto sm:max-w-none sm:h-auto ${
+                        className={`group/gallery relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 bg-slate-900 cursor-pointer shadow-sm hover:border-teal-500 dark:hover:border-[#7cedeb] hover:shadow-xl transition-all duration-300 shrink-0 snap-center w-[84vw] max-w-[320px] h-[240px] sm:w-auto sm:max-w-none sm:h-auto ${
                           isFirstHero 
                             ? "sm:col-span-2 sm:row-span-2 aspect-auto" 
                             : "col-span-1 row-span-1"
@@ -339,7 +339,7 @@ export default function Passions() {
                         <img
                           src={url}
                           alt={`${activePassion.title} - ${actualIdx + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover/gallery:scale-108"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover/gallery:scale-[1.08]"
                           referrerPolicy="no-referrer"
                           loading="lazy"
                         />
@@ -384,12 +384,12 @@ export default function Passions() {
                       <div
                         key={actualIdx}
                         onClick={() => setLightboxIndex(actualIdx)}
-                        className="group/gallery relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 bg-slate-900 cursor-pointer shadow-sm hover:border-teal-500 dark:hover:border-[#7cedeb] hover:shadow-xl transition-all duration-350 shrink-0 snap-center w-[82vw] max-w-[300px] aspect-[4/3] sm:w-auto sm:max-w-none"
+                        className="group/gallery relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 bg-slate-900 cursor-pointer shadow-sm hover:border-teal-500 dark:hover:border-[#7cedeb] hover:shadow-xl transition-all duration-300 shrink-0 snap-center w-[82vw] max-w-[300px] aspect-[4/3] sm:w-auto sm:max-w-none"
                       >
                         <img
                           src={url}
                           alt={`${activePassion.title} - ${actualIdx + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover/gallery:scale-108"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover/gallery:scale-[1.08]"
                           referrerPolicy="no-referrer"
                           loading="lazy"
                         />
@@ -511,6 +511,7 @@ export default function Passions() {
                 onClick={() => setLightboxIndex(null)}
                 className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20"
                 title={isFr ? "Fermer (Échap)" : "Close (Esc)"}
+                aria-label={isFr ? "Fermer" : "Close"}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -525,6 +526,7 @@ export default function Passions() {
                   onClick={handlePrevImage}
                   className="absolute left-3 sm:left-6 z-20 p-3 sm:p-4 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer hover:scale-110 active:scale-95 shadow-xl"
                   title={isFr ? "Image précédente (Flèche Gauche)" : "Previous image (Left Arrow)"}
+                  aria-label={isFr ? "Image précédente" : "Previous image"}
                 >
                   <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
                 </button>
@@ -544,6 +546,7 @@ export default function Passions() {
                   onClick={handleNextImage}
                   className="absolute right-3 sm:right-6 z-20 p-3 sm:p-4 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer hover:scale-110 active:scale-95 shadow-xl"
                   title={isFr ? "Image suivante (Flèche Droite)" : "Next image (Right Arrow)"}
+                  aria-label={isFr ? "Image suivante" : "Next image"}
                 >
                   <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
                 </button>
@@ -557,6 +560,7 @@ export default function Passions() {
                   <button
                     key={idx}
                     onClick={() => setLightboxIndex(idx)}
+                    aria-label={`${isFr ? "Voir la photo" : "View photo"} ${idx + 1}`}
                     className={`relative w-12 sm:w-16 h-10 sm:h-12 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                       lightboxIndex === idx 
                         ? "border-[#7cedeb] ring-2 ring-[#7cedeb]/50 scale-105" 

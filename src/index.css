@@ -97,6 +97,70 @@
 }
 
 /* ==========================================================================
+   ENTRANCE ANIMATIONS (previously missing: fade-in, zoom-in, slide-in)
+   ========================================================================== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in-95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-from-bottom-8 {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-in {
+  animation: fade-in 0.2s var(--vanish-in-ease, ease-out) both;
+}
+.fade-in {
+  animation: fade-in 0.4s var(--vanish-in-ease, ease-out) both;
+}
+.zoom-in-95 {
+  animation: zoom-in-95 0.2s var(--vanish-in-ease, ease-out) both;
+}
+.slide-in-from-bottom-8 {
+  animation: slide-in-from-bottom-8 0.3s var(--vanish-in-ease, ease-out) both;
+}
+.slide-in-from-right {
+  animation: slide-in-from-right 0.3s var(--vanish-in-ease, ease-out) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+/* ==========================================================================
    ELEGANT COSMIC DARK THEME OVERRIDES
    ========================================================================== */
 

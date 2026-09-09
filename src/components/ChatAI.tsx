@@ -99,7 +99,7 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
 
       setMessages(prev => [...prev, responseMsg]);
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) console.error(error);
       setMessages(prev => [
         ...prev,
         {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, Mail, Phone, MapPin, Github, Linkedin, Printer, User, Sun, Moon } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
-import profilePhoto from "../assets/images/pierre_portrait_photo.png";
+import profilePhoto from "../assets/images/pierre_portrait_photo.webp";
 
 interface CVPageProps {
   onBack: () => void;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Sparkles, ArrowRight, Github, Linkedin, Mail, FileText } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
-import profilePhoto from "../assets/images/pierre_portrait_photo.png";
+import profilePhoto from "../assets/images/pierre_portrait_photo.webp";
 
 interface HeroProps {
   onChatOpen: () => void;

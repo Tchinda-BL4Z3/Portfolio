@@ -70,7 +70,7 @@ export default function Certifications() {
                   <img
                     src={cert.image}
                     alt={cert.title}
-                    className="w-full h-full object-cover object-center transition-transform duration-505 group-hover/pdf:scale-103"
+                    className="w-full h-full object-cover object-center transition-transform duration-500 group-hover/pdf:scale-[1.03]"
                     referrerPolicy="no-referrer"
                     loading="lazy"
                   />
@@ -203,6 +203,7 @@ export default function Certifications() {
                   onClick={() => setViewerCert(null)}
                   className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-full border border-slate-150 transition-colors cursor-pointer shrink-0"
                   title={isFr ? "Fermer" : "Close"}
+                  aria-label={isFr ? "Fermer" : "Close"}
                 >
                   <X className="w-4 h-4" />
                 </button>

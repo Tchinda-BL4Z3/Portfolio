@@ -3,7 +3,7 @@ import htmlCssPdf from "./certification/Coursera YSFMHPJLFWQ8.pdf";
 import aiFundamentalsPdf from "./certification/Coursera YY5XVWYEGXM0.pdf";
 import htmlCssPreview from "./certification/cert_html_css_p.jpg";
 import aiFundamentalsPreview from "./certification/cert_ai_fundamentals_p.jpg";
-import portfolioSiteImage from "./assets/images/portfolio_site.png";
+import portfolioSiteImage from "./assets/images/portfolio_site.webp";
 
 const hobbyImages = import.meta.glob("./hobbies/**/*.{jpg,jpeg,png,webp}", {
   eager: true,
@@ -182,7 +182,6 @@ export const translations = {
           category: "Fullstack",
           githubUrl: "https://github.com/pierre-tchinda/portfolio-blog-dev-fullstack",
           demoUrl: "https://tchinda-fogang.me",
-          featured: true,
           image: portfolioSiteImage
         }
       ]
@@ -415,7 +414,6 @@ title: "HTML and CSS in depth",
           category: "Fullstack",
           githubUrl: "https://github.com/pierre-tchinda/portfolio-blog-dev-fullstack",
           demoUrl: "https://tchinda-fogang.me",
-          featured: true,
           image: portfolioSiteImage
         }
       ]

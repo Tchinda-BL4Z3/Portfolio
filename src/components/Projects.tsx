@@ -118,7 +118,7 @@ export default function Projects() {
           {paginatedProjects.map((project) => (
             <div
               key={project.id}
-              className="group relative flex flex-col justify-between h-full bg-slate-50/40 hover:bg-white rounded-3xl border border-slate-100 hover:border-slate-200 hover:shadow-lg transition-all duration-350 overflow-hidden w-[235px] xs:w-[255px] sm:w-[295px] md:w-auto snap-center shrink-0"
+              className="group relative flex flex-col justify-between h-full bg-slate-50/40 hover:bg-white rounded-3xl border border-slate-100 hover:border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden w-[235px] xs:w-[255px] sm:w-[295px] md:w-auto snap-center shrink-0"
             >
               <div>
                 {/* Brand Visual Portrait / Photo Container */}
@@ -126,7 +126,7 @@ export default function Projects() {
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute top-4 left-4 pt-[1px]">

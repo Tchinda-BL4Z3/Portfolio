@@ -218,6 +218,7 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
               onClick={toggleTheme}
               className="p-2 bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 rounded-full shadow-2xs transition-all cursor-pointer flex items-center justify-center text-slate-600 dark:text-slate-300"
               title={theme === "light" ? (language === "FR" ? "Mode Sombre" : "Dark Mode") : (language === "FR" ? "Mode Clair" : "Light Mode")}
+              aria-label={theme === "light" ? (language === "FR" ? "Mode Sombre" : "Dark Mode") : (language === "FR" ? "Mode Clair" : "Light Mode")}
             >
               {theme === "light" ? (
                 <Moon className="w-4 h-4 text-slate-600" />
@@ -265,6 +266,7 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
               onClick={onChatOpen}
               className="p-1.5 rounded-full text-slate-600 hover:bg-teal-50 hover:text-teal-600 transition-colors cursor-pointer"
               title="Assistant IA de Pierre"
+              aria-label="Assistant IA"
             >
               <Sparkles className="w-4.5 h-4.5 text-teal-500" />
             </button>
@@ -274,6 +276,7 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
               onClick={toggleTheme}
               className="p-1.5 bg-slate-100 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-700 rounded-full shadow-2xs transition-all cursor-pointer flex items-center justify-center text-slate-600 dark:text-slate-300"
               title={theme === "light" ? (language === "FR" ? "Mode Sombre" : "Dark Mode") : (language === "FR" ? "Mode Clair" : "Light Mode")}
+              aria-label={theme === "light" ? (language === "FR" ? "Mode Sombre" : "Dark Mode") : (language === "FR" ? "Mode Clair" : "Light Mode")}
             >
               {theme === "light" ? (
                 <Moon className="w-3.5 h-3.5" />
@@ -284,6 +287,8 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none cursor-pointer"
+              aria-label={isOpen ? (language === "FR" ? "Fermer le menu" : "Close menu") : (language === "FR" ? "Ouvrir le menu" : "Open menu")}
+              aria-expanded={isOpen}
             >
               {isOpen ? <X className="w-5.5 h-5.5" /> : <Menu className="w-5.5 h-5.5" />}
             </button>
