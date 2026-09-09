@@ -1,0 +1,394 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+
+  /* Custom slate shades (between default Tailwind steps) */
+  --color-slate-150: #e7eef5;
+  --color-slate-440: #8193ab;
+  --color-slate-450: #6f82a0;
+  --color-slate-650: #4b5f78;
+  --color-slate-705: #5b6c83;
+  --color-slate-750: #43546b;
+  --color-slate-850: #19283c;
+  --color-slate-905: #0b1424;
+  --color-slate-955: #050b18;
+  --color-teal-150: #c7f5ec;
+  --color-teal-650: #128d81;
+
+  /* Fractional spacings used by utilities such as w-4.5, h-5.5 */
+  --spacing-4-5: calc(var(--spacing) * 4.5);
+  --spacing-5-5: calc(var(--spacing) * 5.5);
+  --spacing-22: calc(var(--spacing) * 22);
+
+  /* Custom animations used across components */
+  --animate-spin-slow: spin-slow 3s linear infinite;
+  --animate-pulse-subtle: pulse-subtle 2.5s ease-in-out infinite;
+
+  @keyframes spin-slow {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scale(0.97);
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-50 text-slate-900 selection:bg-teal-100 selection:text-teal-900 antialiased scroll-smooth;
+  }
+}
+
+/* Custom visual glow classes */
+.card-glow {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  @apply border border-slate-100/80 bg-white/90 backdrop-blur-sm transition-all duration-300;
+}
+
+/* 3D Flip Card Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.dark-card-glow {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  @apply border border-slate-800 bg-slate-900/95 backdrop-blur-md transition-all duration-300;
+}
+
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==========================================================================
+   ELEGANT COSMIC DARK THEME OVERRIDES
+   ========================================================================== */
+
+/* Active dark mode variables inside Tailwind v4 */
+.dark {
+  color-scheme: dark;
+}
+
+/* Base Body Override */
+.dark body,
+html.dark body,
+.dark #root {
+  background-color: #030712 !important; /* extremely deep slate */
+  color: #f1f5f9 !important;
+}
+
+/* Background overrides: card divs, segments, and menus */
+.dark .bg-white,
+.dark .bg-white\/90,
+.dark .bg-white\/95,
+.dark .bg-white\/80 {
+  background-color: #0d1527 !important; /* premium slate dark container */
+}
+
+/* Section backgrounds (e.g., bg-slate-50/50) */
+.dark .bg-slate-50,
+.dark .bg-slate-50\/50,
+.dark .bg-slate-50\/40,
+.dark .bg-slate-100\/70,
+.dark .bg-slate-100 {
+  background-color: #070b16 !important; /* secondary deep backdrop */
+}
+
+/* Header dynamic configuration */
+.dark #main-navbar.bg-white\/80 {
+  background-color: rgba(13, 21, 39, 0.8) !important;
+  border-bottom-color: #1e293b !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Text Overrides - Standard elements */
+.dark .text-slate-900,
+.dark .text-slate-850,
+.dark .text-slate-800 {
+  color: #f8fafc !important; /* pure off-white */
+}
+
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: #cbd5e1 !important; /* soft white-gray */
+}
+
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: #94a3b8 !important; /* muted cool gray */
+}
+
+/* Custom interactive selections or overlays */
+.dark .hover\:text-slate-900:hover,
+.dark .hover\:text-slate-905:hover,
+.dark .group-hover\:text-slate-900Title,
+.dark .group-hover\:text-slate-900 {
+  color: #ffffff !important;
+}
+
+.dark .text-slate-600.hover\:text-slate-900:hover {
+  color: #ffffff !important;
+}
+
+/* Interactive elements / cards custom overrides */
+.dark .card-glow {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+  background-color: #0d1527 !important;
+  border-color: #1e293b !important;
+}
+
+/* Passions cards when targeted */
+.dark .border-slate-400 {
+  border-color: #0d9488 !important; /* Use teal border if active */
+}
+
+/* Borders overrides across headers & flow grids */
+.dark .border-slate-100,
+.dark .border-slate-150,
+.dark .border-slate-200,
+.dark .border-slate-100\/80,
+.dark .border-slate-200\/80,
+.dark .border-slate-200\/60 {
+  border-color: #1e293b !important; /* solid slate-800 */
+}
+
+.dark .border-y {
+  border-top-color: #1e293b !important;
+  border-bottom-color: #1e293b !important;
+}
+
+.dark .divide-slate-100 > * + * {
+  border-color: #1e293b !important;
+}
+
+/* Custom brand elements like timeline, skills, interactive states */
+.dark .bg-teal-50,
+.dark .bg-teal-50\/40 {
+  background-color: rgba(20, 184, 166, 0.12) !important;
+}
+
+.dark .border-teal-100,
+.dark .border-teal-100\/80 {
+  border-color: rgba(20, 184, 166, 0.25) !important;
+}
+
+.dark .text-teal-700 {
+  color: #2dd4bf !important; /* glowing teal */
+}
+
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-50\/50:hover,
+.dark .hover\:bg-white:hover {
+  background-color: #111a30 !important;
+}
+
+.dark .hover\:border-slate-200:hover {
+  border-color: #334155 !important;
+}
+
+/* Forms input tags, filters and textarea blocks */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #070b16 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #475569 !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #14b8a6 !important; /* teal focus indicator */
+}
+
+/* Timeline left line */
+.dark .border-l {
+  border-left-color: #1e293b !important;
+}
+
+/* Sparkle widgets background & footer copyrights and timeline item bullets */
+.dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+.dark .text-emerald-950,
+.dark .text-emerald-900 {
+  color: #a7f3d0 !important;
+}
+.dark .text-emerald-700 {
+  color: #34d399 !important;
+}
+
+/* Language selector & tabs background */
+.dark .bg-slate-100, .dark .bg-slate-100\/70, .dark .bg-slate-50 {
+  background-color: #111a30 !important;
+}
+
+/* Custom indicator or buttons */
+.dark button.text-slate-600 {
+  color: #cbd5e1;
+}
+
+.dark button.hover\:text-slate-900:hover {
+  color: #ffffff;
+}
+
+/* Project and card shadows and transitions styling */
+.dark .group:hover {
+  border-color: #334155 !important;
+}
+
+/* Active photo preview box or Maximize icon background */
+.dark .bg-slate-900\/60 {
+  background-color: rgba(3, 7, 18, 0.7) !important;
+}
+
+/* Chat bubble styling for the user and model */
+.dark .bg-white.text-slate-800 {
+  background-color: #111a30 !important;
+  color: #f1f5f9 !important;
+  border-color: #1e293b !important;
+}
+
+/* Suggested questions in chat */
+.dark .border-slate-150 {
+  border-color: #1e293b !important;
+}
+
+/* ==========================================================================
+   FLIP CARD & COMPETENCES SECTION EXPLICIT THEMES (White in Light, Black in Dark)
+   ========================================================================== */
+
+/* Light Mode: White Flip Cards & High-Contrast Black Text */
+#competences {
+  background-color: #f8fafc !important;
+  color: #000000 !important;
+}
+
+#competences h2,
+#competences h3,
+#competences p {
+  color: #000000 !important;
+}
+
+.skill-flip-card-front {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.skill-flip-card-back {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #0d9488 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.skill-flip-card-front h4,
+.skill-flip-card-back h4,
+.skill-flip-card-front p,
+.skill-flip-card-back p,
+.skill-flip-card-front span,
+.skill-flip-card-back span,
+.skill-flip-card-front div,
+.skill-flip-card-back div {
+  color: #000000;
+}
+
+.skill-flip-card-front .text-teal-600,
+.skill-flip-card-front .text-teal-700,
+.skill-flip-card-front .text-teal-800,
+.skill-flip-card-back .text-teal-600,
+.skill-flip-card-back .text-teal-700,
+.skill-flip-card-back .text-teal-800 {
+  color: #0f766e !important;
+}
+
+/* Dark Mode: Pure Deep Black Flip Cards & White Text */
+.dark #competences {
+  background-color: #030712 !important;
+  color: #ffffff !important;
+}
+
+.dark #competences h2,
+.dark #competences h3 {
+  color: #ffffff !important;
+}
+
+.dark #competences p {
+  color: #e2e8f0 !important;
+}
+
+.dark .skill-flip-card-front {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .skill-flip-card-back {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(125, 237, 235, 0.6) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9) !important;
+}
+
+.dark .skill-flip-card-front h4,
+.dark .skill-flip-card-back h4,
+.dark .skill-flip-card-front p,
+.dark .skill-flip-card-back p,
+.dark .skill-flip-card-front span,
+.dark .skill-flip-card-back span,
+.dark .skill-flip-card-front div,
+.dark .skill-flip-card-back div {
+  color: #ffffff;
+}
+
+.dark .skill-flip-card-front .text-[#7cedeb],
+.dark .skill-flip-card-back .text-[#7cedeb],
+.dark .skill-flip-card-back .text-teal-300,
+.dark .skill-flip-card-back .text-teal-200 {
+  color: #7cedeb !important;
+}
+

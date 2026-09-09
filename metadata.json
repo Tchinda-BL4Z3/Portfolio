@@ -1,0 +1,8 @@
+{
+  "name": "Portfolio & Blog Dev Fullstack",
+  "description": "Portfolio haut de gamme d'un développeur Full Stack avec blog intégré et un assistant IA interactif pour les recruteurs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
