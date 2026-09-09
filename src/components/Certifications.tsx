@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Award, Calendar, ExternalLink, ShieldCheck } from "lucide-react";
+import { Award, ExternalLink, ShieldCheck, X, FileText } from "lucide-react";
 import { Certification } from "../types";
 import { useLanguage } from "../LanguageContext";
 
@@ -7,6 +7,7 @@ export default function Certifications() {
   const { language, t } = useLanguage();
   const isFr = language === "FR";
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [viewerCert, setViewerCert] = useState<Certification | null>(null);
   const certificationsData: Certification[] = t("certifications.list");
 
   // Pagination Configuration
@@ -58,19 +59,28 @@ export default function Certifications() {
             >
               <div>
                 {/* Visual Certificate Frame */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 rounded-2xl mb-5 border border-slate-150 shadow-sm">
+                <div
+                  className={`relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-5 border border-slate-150 shadow-sm ${
+                    cert.pdfPath ? "bg-slate-100 cursor-pointer hover:border-teal-400 group/pdf" : "bg-slate-100"
+                  }`}
+                  onClick={() => {
+                    if (cert.pdfPath) setViewerCert(cert);
+                  }}
+                >
                   <img
-                    src="/src/assets/images/cert_diploma_1779368313219.png"
+                    src={cert.image}
                     alt={cert.title}
-                    className="w-full h-full object-cover transition-transform duration-505 group-hover:scale-103"
+                    className="w-full h-full object-cover object-center transition-transform duration-505 group-hover/pdf:scale-103"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute top-3 left-3 pt-[1px]">
                     <div className="p-2 bg-white/95 backdrop-blur-xs border border-slate-150 rounded-xl text-teal-600 shadow-sm">
                       <Award className="w-4 h-4" />
                     </div>
                   </div>
-                </div>
+                  </div>
 
                 {/* Verification badge */}
                 <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2.5">
@@ -88,9 +98,11 @@ export default function Certifications() {
                 
                 {/* Meta details */}
                 <div className="space-y-1.5 mb-5 border-t border-slate-100/70 pt-3">
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{t("certifications.acquired") || (isFr ? "Obtenu en" : "Acquired in")} {cert.date}</span>
+                  <div className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
+                    <span className="w-3.5 h-3.5 shrink-0 mt-0.5 text-teal-500 rounded-full bg-teal-500/15 flex items-center justify-center">
+                      <span className="w-1 h-1 rounded-full bg-teal-500" />
+                    </span>
+                    <span>{cert.description}</span>
                   </div>
                   {cert.credentialId && (
                     <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
@@ -101,18 +113,29 @@ export default function Certifications() {
                 </div>
               </div>
 
-              {/* Action Button */}
-              {cert.url && (
-                <a
-                  href={cert.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-750 font-medium text-xs transition-all cursor-pointer"
-                >
-                  <span className="font-sans">{t("certifications.verify_button") || (isFr ? "Vérifier la certification" : "Verify Certification")}</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                </a>
-              )}
+              {/* Action Buttons */}
+              <div className="mt-2 flex flex-col gap-2">
+                {cert.pdfPath && (
+                  <button
+                    onClick={() => setViewerCert(cert)}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-teal-400" />
+                    <span className="font-sans">{isFr ? "Voir la certification" : "View certification"}</span>
+                  </button>
+                )}
+                {cert.url && (
+                  <a
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
+                  >
+                    <span className="font-sans">{t("certifications.verify_button") || (isFr ? "Vérifier la certification" : "Verify Certification")}</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  </a>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -162,6 +185,69 @@ export default function Certifications() {
           </div>
         )}
 
+      {/* PDF Viewer Modal */}
+        {viewerCert && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between gap-4 p-5 border-b border-slate-100 shrink-0">
+                <div className="min-w-0">
+                  <h3 className="font-display font-semibold text-base text-slate-900 truncate">
+                    {viewerCert.title}
+                  </h3>
+                  <p className="font-sans text-xs text-slate-500">
+                    {viewerCert.issuer}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setViewerCert(null)}
+                  className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-full border border-slate-150 transition-colors cursor-pointer shrink-0"
+                  title={isFr ? "Fermer" : "Close"}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* PDF Embed */}
+              <div className="flex-1 min-h-[60vh] bg-slate-100">
+                <iframe
+                  src={viewerCert.pdfPath}
+                  title={viewerCert.title}
+                  className="w-full h-full min-h-[60vh]"
+                />
+              </div>
+
+              {/* Modal Footer */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-5 border-t border-slate-100 shrink-0">
+                <span className="font-mono text-[11px] text-slate-400">
+                  {viewerCert.credentialId ? `ID : ${viewerCert.credentialId}` : ""}
+                </span>
+                <div className="flex items-center gap-2">
+                  {viewerCert.url && (
+                    <a
+                      href={viewerCert.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-xs transition-all cursor-pointer"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>{isFr ? "Vérifier sur Coursera" : "Verify on Coursera"}</span>
+                    </a>
+                  )}
+                  <a
+                    href={viewerCert.pdfPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium text-xs transition-all cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{isFr ? "Ouvrir le PDF" : "Open PDF"}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

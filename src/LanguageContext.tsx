@@ -1,4 +1,43 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import htmlCssPdf from "./certification/Coursera YSFMHPJLFWQ8.pdf";
+import aiFundamentalsPdf from "./certification/Coursera YY5XVWYEGXM0.pdf";
+import htmlCssPreview from "./certification/cert_html_css_p.jpg";
+import aiFundamentalsPreview from "./certification/cert_ai_fundamentals_p.jpg";
+import portfolioSiteImage from "./assets/images/portfolio_site.png";
+
+const hobbyImages = import.meta.glob("./hobbies/**/*.{jpg,jpeg,png,webp}", {
+  eager: true,
+  as: "url",
+}) as Record<string, string>;
+
+const HOBBIES: Record<"reading" | "gaming" | "anime", string[]> = {
+  reading: [
+    hobbyImages["./hobbies/reading/andrew-neel-cckf4TsHAuw-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/christopher-gower-m_HRfLhgABo-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/daniel-korpai-pKRNxEguRgM-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/domenico-loia-hGV2TfOh0ns-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/eftakher-alam-i1VQZsU86ok-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/julian-hochgesang-Dkn8-zPIbwo-unsplash.jpg"],
+    hobbyImages["./hobbies/reading/lee-campbell-DtDlVpy-vvQ-unsplash.jpg"],
+  ],
+  gaming: [
+    hobbyImages["./hobbies/gaming/download.jpg"],
+    hobbyImages["./hobbies/gaming/fiche-pokedex-legendes-pokemon-za-info-attaques-emplacement-localisation-guide.jpg"],
+    hobbyImages["./hobbies/gaming/pokemon-violet-ecarlate-guide-fiche-pokedex-capacites-talents-evolution-localisation-infos.jpg"],
+    hobbyImages["./hobbies/gaming/pokemon-violet-ecarlate-guide-fiche-pokedex-capacites-talents-evolution-localisation-infos-dlc-2-disque-indigo-myrtille-tresor-enfoui-zone-zero.jpg"],
+  ],
+  anime: [
+    hobbyImages["./hobbies/anime-art/22f33386454e6d1585ae9e1b89c821e2.jpg"],
+    hobbyImages["./hobbies/anime-art/25986acdd337284c9604bcad32a44117.jpg"],
+    hobbyImages["./hobbies/anime-art/292fb5b83cdd67bf29dcd93bbd4c4a27.jpg"],
+    hobbyImages["./hobbies/anime-art/316bf0476b254eb7e2e0bd43dc6b675c.jpg"],
+    hobbyImages["./hobbies/anime-art/325b5039ff20d929d11e74072fbc11fe.jpg"],
+    hobbyImages["./hobbies/anime-art/420b6554c96903e3f3c3f3e6b4f6b7b2.jpg"],
+    hobbyImages["./hobbies/anime-art/439417b7840cabb294bb7e612712de4f.jpg"],
+    hobbyImages["./hobbies/anime-art/8e4d1656ed2a03d2337ba7fee064a8ed.jpg"],
+    hobbyImages["./hobbies/anime-art/991e943a0d98683ccaa2b625fd7e4c06.jpg"],
+  ],
+};
 
 export type Language = "FR" | "EN";
 
@@ -137,47 +176,14 @@ export const translations = {
       list: [
         {
           id: "pro-1",
-          title: "EcoRoute - Itinéraire Carbone Vert",
-          description: "Application de cartographie optimisée calculant l'itinéraire optimal rejetant le moins de CO2 en temps réel. Intègre l'API Google Maps, un stockage chiffré des clés de sessions et d'API, et un tableau de bord analytique rigoureusement sécurisé.",
-          techStack: ["React Native", "TypeScript", "Node.js", "Express", "Google Maps API", "Tailwind CSS"],
-          category: "Mobile",
-          githubUrl: "https://github.com/pierre-tchinda/ecoroute-mobile",
-          demoUrl: "https://github.com/pierre-tchinda/ecoroute-mobile",
+          title: "Portfolio & Blog — Développement Fullstack",
+          description: "Site personnel complet : portfolio, blog technique et CV interactif. Développé avec React et TypeScript, il intègre un backend Express avec persistance SQLite, un formulaire de contact sécurisé, un blog alimenté par une API REST et le bilinguisme FR/EN.",
+          techStack: ["React", "TypeScript", "Tailwind CSS", "Vite", "Express", "SQLite"],
+          category: "Fullstack",
+          githubUrl: "https://github.com/pierre-tchinda/portfolio-blog-dev-fullstack",
+          demoUrl: "https://tchinda-fogang.me",
           featured: true,
-          image: "/src/assets/images/ecoroute_app_1779368251643.png"
-        },
-        {
-          id: "pro-2",
-          title: "DevSpace - Blog & Communauté Synchrone",
-          description: "Plateforme communautaire et micro-blogging pour développeurs. Éditeur technique en Markdown sécurisé contre les injections (XSS/input laundering). Les échanges synchrones s'effectuent par un protocole WebSocket blindé avec authentification JWT.",
-          techStack: ["React", "Express", "REST APIs", "WebSockets", "MongoDB", "Tailwind CSS"],
-          category: "Web",
-          githubUrl: "https://github.com/pierre-tchinda/devspace-platform",
-          demoUrl: "https://github.com/pierre-tchinda/devspace-platform",
-          featured: true,
-          image: "/src/assets/images/devspace_app_1779368265088.png"
-        },
-        {
-          id: "pro-3",
-          title: "Agrimarket - Commerce Agricole Équitable",
-          description: "Portail mobile connectant producteurs agricoles et acheteurs urbains au Cameroun. Intègre des règles de sécurité (Firestore Security Rules) très strictes pour s'assurer que les données et les transactions financières des utilisateurs restent hautement sécurisées.",
-          techStack: ["React Native", "Firebase", "Firestore", "Cloud Functions", "Expo Push Notifications"],
-          category: "Impact Social",
-          githubUrl: "https://github.com/pierre-tchinda/agrimarket-impact",
-          demoUrl: "https://github.com/pierre-tchinda/agrimarket-impact",
-          featured: true,
-          image: "/src/assets/images/agrimarket_app_1779368280856.png"
-        },
-        {
-          id: "pro-4",
-          title: "TaskPulse - Backoffice de Gestion Agile",
-          description: "Outil d'administration de workflow d'équipes. Gère finement les rôles utilisateurs et l'accès réseau. Protégé contre les injections SQL grâce à de l'Object-Relational Mapping (ORM) et intègre des visualisations sécurisées de données d'activité.",
-          techStack: ["React", "TypeScript", "PostgreSQL", "Knex.js", "Tailwind CSS", "Recharts"],
-          category: "Web",
-          githubUrl: "https://github.com/pierre-tchinda/taskpulse-dashboard",
-          demoUrl: "https://github.com/pierre-tchinda/taskpulse-dashboard",
-          featured: false,
-          image: "/src/assets/images/taskpulse_app_1779368297129.png"
+          image: portfolioSiteImage
         }
       ]
     },
@@ -192,30 +198,23 @@ export const translations = {
       list: [
         {
           id: "cert-1",
-          title: "Google Cybersecurity Professional Certificate",
-          issuer: "Google (via Coursera)",
-          date: "Avril 2026",
-          credentialId: "COURSERA-GOOGLE-CYBERSEC9",
-          url: "https://coursera.org/verify/google-cybersecurity",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
+title: "HTML and CSS in depth",
+          issuer: "Meta (via Coursera)",
+          description: "Maîtrise des fondamentaux du développement web : HTML sémantique et accessible, CSS moderne avec Flexbox et Grid, et design responsive adapté à tous les écrans.",
+          credentialId: "YSFMHPJLFWQ8",
+          url: "https://coursera.org/verify/YSFMHPJLFWQ8",
+          image: htmlCssPreview,
+          pdfPath: htmlCssPdf
         },
         {
           id: "cert-2",
-          title: "Meta Front-End Developer Professional Certificate",
-          issuer: "Meta (via Coursera)",
-          date: "Février 2026",
-          credentialId: "COURSERA-META-7781F",
-          url: "https://coursera.org/verify/meta-frontend-dev",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
-        },
-        {
-          id: "cert-3",
-          title: "IBM Cybersecurity Analyst Professional Certificate",
-          issuer: "IBM (via Coursera)",
-          date: "Novembre 2025",
-          credentialId: "COURSERA-IBM-SECANALYST1",
-          url: "https://coursera.org/verify/ibm-cybersecurity-analyst",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
+          title: "AI Fundamentals",
+          issuer: "Google (via Coursera)",
+          description: "Introduction pratique à l'intelligence artificielle : principes du machine learning, éthique de l'IA et cas d'usage concrets dans des applications métier.",
+          credentialId: "YY5XVWYEGXM0",
+          url: "https://coursera.org/verify/YY5XVWYEGXM0",
+          image: aiFundamentalsPreview,
+          pdfPath: aiFundamentalsPdf
         }
       ]
     },
@@ -248,58 +247,19 @@ export const translations = {
           id: "reading",
           title: "Lecture & Veille Intellectuelle",
           description: "Passionné par la lecture d'essais technologiques, d'architecture logicielle, d'ouvrages scientifiques et de philosophie. La lecture quotidienne nourrit ma curiosité intellectuelle, renforce mon esprit critique et forge une capacité de concentration profonde, indispensable pour concevoir et structurer des architectures informatiques exigeantes.",
-          images: [
-            "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1507842229447-ff47f4f66487?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1532012164546-f432f2e37273?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1476275466078-4007374efbbe?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1519682337058-a94d519337bc?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.reading
         },
         {
           id: "gaming",
           title: "Gaming",
           description: "Adepte de jeux vidéo de stratégie, de jeux de rôle immersifs et d'eSports. Le gaming est pour moi une source d'inspiration en matière de gamification, d'interfaces narratives interactives et de résolution de défis analytiques sous pression.",
-          images: [
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1600861195091-690c92f1d2cc?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1548685913-fe6574340a49?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.gaming
         },
         {
           id: "anime",
           title: "Anime/Designer",
           description: "Passionné d'animation japonaise, de charadesign et d'illustrations vectorielles numériques. Le dessin numérique affine mon œil pour le choix des palettes de couleurs, l'harmonie des contrastes et la cohérence esthétique dans les interfaces applicatives.",
-          images: [
-            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1501472312651-726afd116ff1?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1561214115-f2f134cc4912?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.anime
         }
       ]
     },
@@ -449,47 +409,14 @@ export const translations = {
       list: [
         {
           id: "pro-1",
-          title: "EcoRoute - Carbon-Light Navigation",
-          description: "Mobile mapping app calculating optimal eco-friendly routes yielding the lowest carbon footprint. Integrates Google Maps API, a highly secured API key holder mechanism, and custom cryptographic session managers.",
-          techStack: ["React Native", "TypeScript", "Node.js", "Express", "Google Maps API", "Tailwind CSS"],
-          category: "Mobile",
-          githubUrl: "https://github.com/pierre-tchinda/ecoroute-mobile",
-          demoUrl: "https://github.com/pierre-tchinda/ecoroute-mobile",
+          title: "Portfolio & Blog — Fullstack Development",
+          description: "Complete personal website: portfolio, tech blog and interactive CV. Built with React and TypeScript, it features an Express backend with SQLite persistence, a secure contact form, a blog powered by a REST API and FR/EN bilingual support.",
+          techStack: ["React", "TypeScript", "Tailwind CSS", "Vite", "Express", "SQLite"],
+          category: "Fullstack",
+          githubUrl: "https://github.com/pierre-tchinda/portfolio-blog-dev-fullstack",
+          demoUrl: "https://tchinda-fogang.me",
           featured: true,
-          image: "/src/assets/images/ecoroute_app_1779368251643.png"
-        },
-        {
-          id: "pro-2",
-          title: "DevSpace - Blog & Live Community",
-          description: "Social blog system for programmers. Integrates Markdown rendering protected against XSS injections. Live exchanges are powered by WebSockets protected by robust, secure JSON Web Token authentication.",
-          techStack: ["React", "Express", "REST APIs", "WebSockets", "MongoDB", "Tailwind CSS"],
-          category: "Web",
-          githubUrl: "https://github.com/pierre-tchinda/devspace-platform",
-          demoUrl: "https://github.com/pierre-tchinda/devspace-platform",
-          featured: true,
-          image: "/src/assets/images/devspace_app_1779368265088.png"
-        },
-        {
-          id: "pro-3",
-          title: "AgriMarket - Fair-Trade Farmer App",
-          description: "A high-impact social mobile portal connecting rural Cameroonian farmers with central urbans. Built on specialized Firebase security policies (Firestore Security Rules) protecting user data from unsolicited read/writes.",
-          techStack: ["React Native", "Firebase", "Firestore", "Cloud Functions", "Expo Push Notifications"],
-          category: "Impact Social",
-          githubUrl: "https://github.com/pierre-tchinda/agrimarket-impact",
-          demoUrl: "https://github.com/pierre-tchinda/agrimarket-impact",
-          featured: true,
-          image: "/src/assets/images/agrimarket_app_1779368280856.png"
-        },
-        {
-          id: "pro-4",
-          title: "TaskPulse - Agile Backoffice Panel",
-          description: "Visual agile team task workspace. Integrates strict user privilege role mapping, protection against SQL injection bugs using an ORM layer, and safe graphic charting modules.",
-          techStack: ["React", "TypeScript", "PostgreSQL", "Knex.js", "Tailwind CSS", "Recharts"],
-          category: "Web",
-          githubUrl: "https://github.com/pierre-tchinda/taskpulse-dashboard",
-          demoUrl: "https://github.com/pierre-tchinda/taskpulse-dashboard",
-          featured: false,
-          image: "/src/assets/images/taskpulse_app_1779368297129.png"
+          image: portfolioSiteImage
         }
       ]
     },
@@ -504,30 +431,23 @@ export const translations = {
       list: [
         {
           id: "cert-1",
-          title: "Google Cybersecurity Professional Certificate",
-          issuer: "Google (via Coursera)",
-          date: "April 2026",
-          credentialId: "COURSERA-GOOGLE-CYBERSEC9",
-          url: "https://coursera.org/verify/google-cybersecurity",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
+          title: "HTML and CSS in depth",
+          issuer: "Meta (via Coursera)",
+          description: "Mastery of core web development fundamentals: semantic and accessible HTML, modern CSS with Flexbox and Grid, and responsive design for every screen.",
+          credentialId: "YSFMHPJLFWQ8",
+          url: "https://coursera.org/verify/YSFMHPJLFWQ8",
+          image: htmlCssPreview,
+          pdfPath: htmlCssPdf
         },
         {
           id: "cert-2",
-          title: "Meta Front-End Developer Professional Certificate",
-          issuer: "Meta (via Coursera)",
-          date: "February 2026",
-          credentialId: "COURSERA-META-7781F",
-          url: "https://coursera.org/verify/meta-frontend-dev",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
-        },
-        {
-          id: "cert-3",
-          title: "IBM Cybersecurity Analyst Professional Certificate",
-          issuer: "IBM (via Coursera)",
-          date: "November 2025",
-          credentialId: "COURSERA-IBM-SECANALYST1",
-          url: "https://coursera.org/verify/ibm-cybersecurity-analyst",
-          image: "/src/assets/images/cert_diploma_1779368313219.png"
+          title: "AI Fundamentals",
+          issuer: "Google (via Coursera)",
+          description: "A practical introduction to artificial intelligence: machine learning principles, AI ethics, and concrete use cases in business applications.",
+          credentialId: "YY5XVWYEGXM0",
+          url: "https://coursera.org/verify/YY5XVWYEGXM0",
+          image: aiFundamentalsPreview,
+          pdfPath: aiFundamentalsPdf
         }
       ]
     },
@@ -560,58 +480,19 @@ export const translations = {
           id: "reading",
           title: "Reading & Intellectual Exploration",
           description: "Avid reader of software architecture books, technology essays, philosophy, and thought-provoking scientific literature. Daily reading cultivates intellectual curiosity, sharpens analytical discipline, and fosters the deep focus vital for architecting intricate digital systems.",
-          images: [
-            "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1507842229447-ff47f4f66487?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1532012164546-f432f2e37273?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1476275466078-4007374efbbe?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1519682337058-a94d519337bc?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.reading
         },
         {
           id: "gaming",
           title: "Gaming",
           description: "A fan of tactical strategy, high-fidelity RPGs, and eSports games. Gaming functions as my school of thought regarding fluid interactive workflows, gamified applications mechanisms, and tackling analytical problems under time pressure.",
-          images: [
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1600861195091-690c92f1d2cc?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1548685913-fe6574340a49?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.gaming
         },
         {
           id: "anime",
           title: "Anime/Designer",
           description: "Admire Japanese anime animations, character sketch styles, and clean dynamic vector illustrations. Digitally sketching deepens my execution of beautiful color harmonies, optimal margins, and visual weight inside structural user interfaces.",
-          images: [
-            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1501472312651-726afd116ff1?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1561214115-f2f134cc4912?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=600&auto=format&fit=crop"
-          ]
+          images: HOBBIES.anime
         }
       ]
     },

@@ -31,9 +31,11 @@ export interface Certification {
   id: string;
   title: string;
   issuer: string;
-  date: string;
+  description: string;
   credentialId?: string;
   url?: string;
+  image?: string;
+  pdfPath?: string;
 }
 
 export interface Passion {
