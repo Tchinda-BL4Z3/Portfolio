@@ -34,6 +34,7 @@ export interface Certification {
   credentialId?: string;
   url?: string;
   image?: string;
+  largeImage?: string;
   pdfPath?: string;
 }
 
@@ -57,6 +58,7 @@ export interface BlogPost {
 }
 
 export interface BlogComment {
+  id?: number;
   author: string;
   text: string;
   date: string;
@@ -67,4 +69,5 @@ export interface ChatMessage {
   role: "user" | "model";
   content: string;
   timestamp: Date;
+  simulated?: boolean;
 }

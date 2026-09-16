@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { 
   BookOpen, Calendar, Clock, ThumbsUp, MessageSquare, CornerDownRight, 
-  Plus, X, Send, BookMarked, User 
+  Plus, X, Send, BookMarked, User, Lock, Trash2 
 } from "lucide-react";
 import { BlogPost, BlogComment } from "../types";
 import { useLanguage } from "../LanguageContext";
+
+// Format a "YYYY-MM-DD" date as a real, localized creation date (fr: "16 septembre 2026").
+// Parsed as local midnight so the calendar day is never shifted by timezones.
+function formatDate(iso: string, fr: boolean): string {
+  if (!iso) return iso;
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat(fr ? "fr-FR" : "en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}
 
 const DEFAULT_FALLBACK_POSTS: BlogPost[] = [
   {
@@ -93,7 +106,17 @@ export default function Blog() {
   const [commentText, setCommentText] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
 
-  // New Post Creator Drawer state
+  // Admin comment moderation state (only visible/possible after access code)
+  const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(null);
+  const [deletingComment, setDeletingComment] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  // Admin post deletion state (end of the article, access code required)
+  const [confirmDeletePost, setConfirmDeletePost] = useState(false);
+  const [deletingPost, setDeletingPost] = useState(false);
+  const [deletePostError, setDeletePostError] = useState<string | null>(null);
+
+  // New Post Creator Drawer state (gated behind an admin access code)
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newExcerpt, setNewExcerpt] = useState("");
@@ -101,6 +124,16 @@ export default function Blog() {
   const [newCategory, setNewCategory] = useState("Mobile");
   const [newReadTime, setNewReadTime] = useState("4 min");
   const [submittingPost, setSubmittingPost] = useState(false);
+  const [postError, setPostError] = useState<string | null>(null);
+  const [confirmingPost, setConfirmingPost] = useState(false);
+
+  // Admin access code gate: only Pierre can open the editor
+  const [hasWriteAccess, setHasWriteAccess] = useState(false);
+  const [accessibleKey, setAccessibleKey] = useState("");
+  const [accessPromptOpen, setAccessPromptOpen] = useState(false);
+  const [accessKeyInput, setAccessKeyInput] = useState("");
+  const [accessError, setAccessError] = useState<string | null>(null);
+  const [checkingAccess, setCheckingAccess] = useState(false);
 
   const isFr = t("language") === "FR";
 
@@ -189,27 +222,111 @@ export default function Blog() {
     setCommentText("");
   };
 
+  // Delete a comment: server-side when it has an id, local-only fallback otherwise.
+  // The button is only exposed after the owner unlocked access with the admin code.
+  const handleDeleteComment = async (comment: BlogComment, index: number) => {
+    if (!selectedPost) return;
+    setDeletingComment(true);
+    setDeleteError(null);
+
+    if (comment.id != null) {
+      try {
+        const res = await fetch(`/api/blog/comments/${comment.id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", "x-admin-key": accessibleKey },
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          setDeleteError(body.error || (isFr ? "Suppression impossible." : "Deletion failed."));
+          setConfirmDeleteIndex(null);
+          setDeletingComment(false);
+          return;
+        }
+      } catch {
+        setDeleteError(isFr ? "Erreur réseau. Vérifiez votre connexion." : "Network error. Check your connection.");
+        setConfirmDeleteIndex(null);
+        setDeletingComment(false);
+        return;
+      }
+    }
+
+    const updatedComments = selectedPost.comments.filter((_, i) => i !== index);
+    setSelectedPost((prev) => (prev ? { ...prev, comments: updatedComments } : prev));
+    setPosts((prev) => prev.map((p) => (p.id === selectedPost.id ? { ...p, comments: updatedComments } : p)));
+    setConfirmDeleteIndex(null);
+    setDeletingComment(false);
+  };
+
+  // Delete the whole article (server-side). Only reachable after admin access.
+  const handleDeletePost = async () => {
+    if (!selectedPost) return;
+    setDeletingPost(true);
+    setDeletePostError(null);
+    try {
+      const res = await fetch(`/api/blog/${selectedPost.id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", "x-admin-key": accessibleKey },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setDeletePostError(body.error || (isFr ? "Suppression impossible." : "Deletion failed."));
+        setConfirmDeletePost(false);
+        setDeletingPost(false);
+        return;
+      }
+    } catch {
+      setDeletePostError(isFr ? "Erreur réseau. Vérifiez votre connexion." : "Network error. Check your connection.");
+      setConfirmDeletePost(false);
+      setDeletingPost(false);
+      return;
+    }
+    await fetchPosts();
+    setSelectedPost(null);
+    setConfirmDeletePost(false);
+    setDeletingPost(false);
+  };
+
+  const verifyAccess = async () => {
+    if (!accessKeyInput.trim()) return;
+    setCheckingAccess(true);
+    setAccessError(null);
+    try {
+      const res = await fetch("/api/blog/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-key": accessKeyInput.trim() },
+        body: JSON.stringify({})
+      });
+      if (res.ok) {
+        setAccessibleKey(accessKeyInput.trim());
+        setHasWriteAccess(true);
+        setAccessPromptOpen(false);
+        setAccessKeyInput("");
+        setIsCreatorOpen(true);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setAccessError(body.error || (isFr ? "Accès refusé." : "Access denied."));
+        setAccessKeyInput("");
+      }
+    } catch {
+      setAccessError(isFr ? "Erreur réseau. Vérifiez votre connexion." : "Network error. Check your connection.");
+    } finally {
+      setCheckingAccess(false);
+    }
+  };
+
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() || !newExcerpt.trim() || !newContent.trim()) return;
-
-    const newPostObj: BlogPost = {
-      id: `post-${Date.now()}`,
-      title: newTitle,
-      excerpt: newExcerpt,
-      content: newContent,
-      category: newCategory,
-      readTime: newReadTime,
-      date: new Date().toISOString().split('T')[0],
-      likes: 0,
-      comments: []
-    };
+    if (!newTitle.trim() || !newExcerpt.trim() || !newContent.trim() || !accessibleKey) return;
 
     try {
       setSubmittingPost(true);
+      setPostError(null);
       const res = await fetch("/api/blog", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": accessibleKey
+        },
         body: JSON.stringify({
           title: newTitle,
           excerpt: newExcerpt,
@@ -225,20 +342,18 @@ export default function Blog() {
         setNewTitle("");
         setNewExcerpt("");
         setNewContent("");
+        setConfirmingPost(false);
         return;
       }
+
+      const body = await res.json().catch(() => ({}));
+      setPostError(body.error || (isFr ? "Échec de la publication." : "Failed to publish."));
     } catch (err) {
-      if (import.meta.env.DEV) console.error("Failed to compile new post via API, falling back to local update:", err);
+      if (import.meta.env.DEV) console.error("Failed to create post via API:", err);
+      setPostError(isFr ? "Erreur réseau. Vérifiez votre connexion." : "Network error. Check your connection.");
     } finally {
       setSubmittingPost(false);
     }
-
-    // Local fallback update
-    setPosts(prev => [newPostObj, ...prev]);
-    setIsCreatorOpen(false);
-    setNewTitle("");
-    setNewExcerpt("");
-    setNewContent("");
   };
 
   return (
@@ -257,7 +372,15 @@ export default function Blog() {
           </div>
 
           <button
-            onClick={() => setIsCreatorOpen(true)}
+            onClick={() => {
+              if (hasWriteAccess) {
+                setIsCreatorOpen(true);
+              } else {
+                setAccessKeyInput("");
+                setAccessError(null);
+                setAccessPromptOpen(true);
+              }
+            }}
             className="flex items-center gap-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold text-xs px-5 py-3 rounded-full border border-teal-200 cursor-pointer transition-all shrink-0 hover:scale-[1.02]"
           >
             <Plus className="w-4 h-4" />
@@ -329,7 +452,7 @@ export default function Blog() {
                     <div className="px-6 pb-6 sm:px-8 sm:pb-8 flex items-center justify-between border-t border-slate-100/60 pt-4">
                       <div className="flex items-center gap-1 text-xs text-slate-400">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>{post.date}</span>
+                        <span>{formatDate(post.date, isFr)}</span>
                       </div>
 
                       <div className="flex justify-end gap-4 text-slate-500">
@@ -388,7 +511,7 @@ export default function Blog() {
                   </span>
                   <div className="flex items-center gap-1 text-slate-400">
                     <Calendar className="w-3.5 h-3.5" />
-                    <span>{selectedPost.date}</span>
+                    <span>{formatDate(selectedPost.date, isFr)}</span>
                   </div>
                   <div className="flex items-center gap-1 text-slate-400">
                     <Clock className="w-3.5 h-3.5" />
@@ -404,6 +527,55 @@ export default function Blog() {
                 <div className="font-sans text-sm sm:text-base text-slate-700 whitespace-pre-line leading-relaxed border-b border-slate-100 pb-8 mb-8">
                   {selectedPost.content}
                 </div>
+
+                {/* Admin-only: delete this article entirely (end of the post) */}
+                {hasWriteAccess && (
+                  <div className="mb-8 p-4 rounded-2xl border border-rose-200 bg-rose-50/60">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="font-display font-semibold text-xs text-rose-700">
+                          {isFr ? "Supprimer l'article" : "Delete this article"}
+                        </p>
+                        <p className="font-sans text-[11px] text-rose-600/80">
+                          {isFr
+                            ? "Cette action efface définitivement l'article et ses commentaires."
+                            : "This permanently removes the article and its comments."}
+                        </p>
+                      </div>
+                      {confirmDeletePost ? (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleDeletePost}
+                            disabled={deletingPost}
+                            className="inline-flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-semibold px-3 py-2 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>{deletingPost ? (isFr ? "Suppression..." : "Deleting...") : (isFr ? "Oui, supprimer" : "Yes, delete")}</span>
+                          </button>
+                          <button
+                            onClick={() => { setConfirmDeletePost(false); setDeletePostError(null); }}
+                            className="px-3 py-2 rounded-lg border border-rose-200 bg-white text-rose-600 text-[11px] font-semibold cursor-pointer hover:bg-rose-50 transition-colors"
+                          >
+                            {isFr ? "Annuler" : "Cancel"}
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => { setConfirmDeletePost(true); setDeletePostError(null); }}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-rose-200 bg-white text-rose-600 text-[11px] font-semibold cursor-pointer hover:bg-rose-50 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>{isFr ? "Supprimer" : "Delete"}</span>
+                        </button>
+                      )}
+                    </div>
+                    {deletePostError && (
+                      <div className="mt-3 bg-rose-100 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs font-medium font-sans">
+                        {deletePostError}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Bottom Actions inside viewing panel */}
                 <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-100">
@@ -434,15 +606,50 @@ export default function Blog() {
                         <div className="p-2 bg-white rounded-xl border border-slate-150 text-slate-600 shadow-2xs">
                           <User className="w-4 h-4" />
                         </div>
-                        <div className="space-y-1">
+                        <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex items-center gap-2">
                              <span className="font-sans font-semibold text-xs text-slate-900">{comment.author}</span>
                              <span className="font-mono text-[10px] text-slate-400">{comment.date}</span>
                           </div>
-                          <p className="font-sans text-xs text-slate-600 leading-relaxed">
+                          <p className="font-sans text-xs text-slate-600 leading-relaxed break-words">
                             {comment.text}
                           </p>
                         </div>
+
+                        {/* Comment moderation (admin only, available after the access code is granted) */}
+                        {hasWriteAccess && (
+                          <div className="shrink-0">
+                            {confirmDeleteIndex === index ? (
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => handleDeleteComment(comment, index)}
+                                  disabled={deletingComment}
+                                  className="inline-flex items-center gap-1 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-semibold px-2 py-1 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
+                                  title={isFr ? "Confirmer la suppression" : "Confirm deletion"}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                  <span>{deletingComment ? (isFr ? "Suppression..." : "Deleting...") : (isFr ? "Confirmer" : "Confirm")}</span>
+                                </button>
+                                <button
+                                  onClick={() => setConfirmDeleteIndex(null)}
+                                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+                                  aria-label={isFr ? "Annuler" : "Cancel"}
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => { setConfirmDeleteIndex(index); setDeleteError(null); }}
+                                className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 cursor-pointer transition-colors"
+                                title={isFr ? "Supprimer ce commentaire" : "Delete this comment"}
+                                aria-label={isFr ? "Supprimer ce commentaire" : "Delete this comment"}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))}
 
@@ -452,6 +659,12 @@ export default function Blog() {
                       </p>
                     )}
                   </div>
+
+                  {deleteError && (
+                    <div className="mt-4 bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs font-medium font-sans">
+                      {deleteError}
+                    </div>
+                  )}
                 </div>
 
                 {/* Sub-Section: Comment Form */}
@@ -504,6 +717,70 @@ export default function Blog() {
           </div>
         )}
 
+        {/* ACCESS CODE GATE: only the blog owner can open the editor */}
+        {accessPromptOpen && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl relative border border-slate-100 p-8 animate-in fade-in zoom-in-95 duration-200">
+              <button
+                onClick={() => setAccessPromptOpen(false)}
+                className="absolute top-4 right-4 p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 rounded-full border border-slate-100 transition-colors cursor-pointer"
+                aria-label={isFr ? "Fermer" : "Close"}
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-teal-50 rounded-xl border border-teal-150 text-teal-700">
+                  <BookMarked className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-slate-900">
+                    {isFr ? "Accès à l'éditeur" : "Editor access"}
+                  </h3>
+                  <p className="font-sans text-xs text-slate-500">
+                    {isFr ? "Zone réservée à l'administrateur" : "Admin-only zone"}
+                  </p>
+                </div>
+              </div>
+
+              <p className="font-sans text-xs text-slate-600 leading-relaxed mb-5">
+                {isFr
+                  ? "Saisissez le code d'accès pour rédiger un article. Seul l'auteur du site peut publier du contenu."
+                  : "Enter the access code to write an article. Only the site owner can publish content."}
+              </p>
+
+              <form
+                onSubmit={(e) => { e.preventDefault(); verifyAccess(); }}
+                className="space-y-4"
+              >
+                <input
+                  type="password"
+                  autoFocus
+                  placeholder={isFr ? "Code d'accès" : "Access code"}
+                  value={accessKeyInput}
+                  onChange={(e) => { setAccessKeyInput(e.target.value); setAccessError(null); }}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500 transition-colors"
+                />
+
+                {accessError && (
+                  <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs font-medium font-sans">
+                    {accessError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={!accessKeyInput.trim() || checkingAccess}
+                  className="w-full bg-slate-900 hover:bg-teal-600 text-white font-semibold text-xs px-5 py-2.5 rounded-lg cursor-pointer disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  {checkingAccess ? (isFr ? "Vérification..." : "Checking...") : (isFr ? "Déverrouiller l'éditeur" : "Unlock editor")}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* DRAWER / SLIDE-IN: REACTION WRITER (CREATE POST) */}
         {isCreatorOpen && (
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-end z-50">
@@ -518,7 +795,7 @@ export default function Blog() {
                   </h3>
                 </div>
                 <button
-                  onClick={() => setIsCreatorOpen(false)}
+                  onClick={() => { setIsCreatorOpen(false); setPostError(null); setConfirmingPost(false); }}
                   className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 rounded-full cursor-pointer transition-colors"
                 aria-label={isFr ? "Fermer l'éditeur" : "Close editor"}
               >
@@ -527,7 +804,7 @@ export default function Blog() {
               </div>
 
               {/* Form Content Scrolling Container */}
-              <form onSubmit={createPost} className="p-6 flex-1 overflow-y-auto space-y-5">
+              <form data-blog-form onSubmit={createPost} className="p-6 flex-1 overflow-y-auto space-y-5">
                 
                 {/* Information Callout */}
                 <div className="bg-teal-50/60 border border-teal-150 p-4 rounded-xl text-teal-800 text-xs leading-relaxed font-sans">
@@ -535,6 +812,13 @@ export default function Blog() {
                     ? "Cet éditeur vous permet d'alimenter le blog technique ! Votre publication est enregistrée de façon permanente dans la base de données du serveur (SQLite) et visible par tous les visiteurs."
                     : "This authoring panel feeds the technical blog posts. Your publication is permanently stored in the server database (SQLite) and immediately rendered for all visitors."}
                 </div>
+
+                {/* Post error */}
+                {postError && (
+                  <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs font-medium font-sans">
+                    {postError}
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider mb-1.5">
@@ -614,20 +898,65 @@ export default function Blog() {
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                   <button
                     type="button"
-                    onClick={() => setIsCreatorOpen(false)}
+                    onClick={() => { setIsCreatorOpen(false); setPostError(null); setConfirmingPost(false); }}
                     className="px-4 py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                   >
                     {isFr ? "Annuler" : "Cancel"}
                   </button>
                   <button
-                    type="submit"
+                    type="button"
                     disabled={submittingPost}
+                    onClick={() => {
+                      if (!newTitle.trim() || !newExcerpt.trim() || !newContent.trim()) return;
+                      setConfirmingPost(true);
+                    }}
                     className="bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs px-5 py-2.5 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
                   >
-                    {submittingPost ? (isFr ? "Création..." : "Creating...") : (isFr ? "Publier l'article" : "Publish Article")}
+                    {isFr ? "Publier l'article" : "Publish Article"}
                   </button>
                 </div>
               </form>
+
+              {/* Confirmation overlay */}
+              {confirmingPost && (
+                <div className="absolute inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-10 p-8">
+                  <div className="max-w-sm w-full text-center space-y-5 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="mx-auto w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center border border-teal-200">
+                      <BookMarked className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <h4 className="font-display font-bold text-lg text-slate-900">
+                      {isFr ? "Confirmer la publication ?" : "Confirm publish?"}
+                    </h4>
+                    <p className="font-sans text-xs text-slate-500 leading-relaxed">
+                      {isFr
+                        ? `Vous êtes sur le point de publier « ${newTitle} » dans la base de données du serveur. Cette action est irréversible.`
+                        : `You are about to publish "${newTitle}" to the server database. This action cannot be undone.`}
+                    </p>
+                    <div className="flex items-center justify-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingPost(false)}
+                        className="px-4 py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
+                      >
+                        {isFr ? "Retour à l'éditeur" : "Back to editor"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={submittingPost}
+                        onClick={() => {
+                          // Trigger the actual form submit via a ref-less approach:
+                          // we call createPost directly through the form's submit
+                          const form = document.querySelector("[data-blog-form]") as HTMLFormElement | null;
+                          if (form) form.requestSubmit();
+                        }}
+                        className="bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs px-5 py-2.5 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
+                      >
+                        {submittingPost ? (isFr ? "Publication..." : "Publishing...") : (isFr ? "Oui, publier" : "Yes, publish")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

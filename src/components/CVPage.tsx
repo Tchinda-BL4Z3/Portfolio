@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Mail, Phone, MapPin, Github, Linkedin, Printer, User, Sun, Moon } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
 import profilePhoto from "../assets/images/pierre_portrait_photo.webp";
@@ -8,17 +8,22 @@ interface CVPageProps {
 }
 
 export default function CVPage({ onBack }: CVPageProps) {
-  const { t } = useLanguage();
-  const mainFr = t("language") === "FR";
-  const [cvLang, setCvLang] = useState<"FR" | "EN">(mainFr ? "FR" : "EN");
+  const { language } = useLanguage();
+  const [cvLang, setCvLang] = useState<"FR" | "EN">(language);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return document.documentElement.classList.contains("dark") || localStorage.getItem("theme") === "dark";
   });
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const isCurrentlyDark = document.documentElement.classList.contains("dark") || localStorage.getItem("theme") === "dark";
     setIsDarkMode(isCurrentlyDark);
   }, []);
+
+  // Keep CV language in sync when user toggles language in the main navbar
+  useEffect(() => {
+    setCvLang(language);
+  }, [language]);
 
   const toggleTheme = () => {
     const nextDark = !isDarkMode;
@@ -36,7 +41,26 @@ export default function CVPage({ onBack }: CVPageProps) {
   };
 
   const handlePrint = () => {
-    window.print();
+    // Always render the printed PDF in light theme, like the site's light view.
+    // The CV layout is compacted to exactly one A4 sheet via the
+    // `@media print` rules in index.css, so no zooming is needed.
+    const hadDark = document.documentElement.classList.contains("dark");
+    if (hadDark) document.documentElement.classList.remove("dark");
+
+    const doPrint = () => {
+      window.print();
+      if (hadDark) document.documentElement.classList.add("dark");
+    };
+
+    // Wait for web fonts so the printed layout matches the final render.
+    const ready =
+      document.fonts && (document.fonts as unknown as { ready: Promise<unknown> }).ready
+        ? Promise.resolve((document.fonts as unknown as { ready: Promise<unknown> }).ready)
+        : Promise.resolve();
+    ready
+      .then(() => new Promise((r) => window.requestAnimationFrame(() => r(null))))
+      .then(() => doPrint())
+      .catch(() => doPrint());
   };
 
   const content = {
@@ -53,7 +77,7 @@ export default function CVPage({ onBack }: CVPageProps) {
       educationTitle: "Formation",
       certificationsTitle: "Certifications",
       referencesTitle: "Références",
-      profileDesc: "Étudiant passionné en Licence 2 Informatique à l'Université de Yaoundé I. Je conjugue compétences de développement web modernes (React, Node.js, Express) et analyse rigoureuse des cyber-menaces pour programmer des architectures applicatives performantes, résilientes et hautement protégées par défaut.",
+      profileDesc: "Étudiant en Licence 2 Informatique à l'Université de Yaoundé I. Développeur web React/Node.js et analyste sécurité, je conçois des architectures applicatives performantes, résilientes et sécurisées par défaut.",
       contacts: [
         { icon: "user", label: "Pierre Tchinda", value: "Pierre Tchinda" },
         { icon: "mail", label: "Email", value: "pierre.tchinda@facsciences-uy1.cm", href: "mailto:pierre.tchinda@facsciences-uy1.cm" },
@@ -92,22 +116,20 @@ export default function CVPage({ onBack }: CVPageProps) {
           company: "Indépendant",
           location: "Yaoundé",
           date: "de 2025 à ce jour",
-          summary: "Conception et déploiement d'interfaces web réactives et d'architectures applicatives sécurisées par défaut pour des clients indépendants et projets universitaires.",
+          summary: "Développement d'interfaces web réactives et d'architectures applicatives sécurisées pour clients indépendants et projets universitaires.",
           categories: [
             {
               title: "Ingénierie Web & Conception :",
               points: [
-                "Création de dashboards et d'interfaces applicatives complexes en React et TypeScript",
-                "Intégration de composants modulaires et optimisation des temps de réponse",
-                "Gestion de conteneurs de développement et de déploiement avec Docker"
+                "Développement de dashboards et d'interfaces applicatives en React et TypeScript",
+                "Conteneurisation des environnements de développement et de déploiement avec Docker"
               ]
             },
             {
               title: "Sécurité applicative & OWASP :",
               points: [
                 "Application stricte des directives OWASP Top 10 (anti-XSS, CSRF, assainissement)",
-                "Mise en place de mécanismes d'authentification robuste et contrôle d'accès",
-                "Surveillance proactive de la conformité et audit du code source"
+                "Mise en place d'authentification robuste, contrôle d'accès et audit du code source"
               ]
             }
           ]
@@ -117,14 +139,13 @@ export default function CVPage({ onBack }: CVPageProps) {
           company: "Service Technique UY1",
           location: "Faculté des Sciences, Yaoundé",
           date: "de juin 2025 à août 2025",
-          summary: "Support technique, maintenance du parc réseau et renforcement de l'infrastructure web de la Faculté.",
+          summary: "Support technique, maintenance du parc réseau et renforcement de l'infrastructure web.",
           categories: [
             {
               title: "Support infrastructure & systèmes :",
               points: [
-                "Maintenance corrective et préventive de parcs machines et commutateurs réseau",
-                "Développement de landing pages promotionnelles étanches contre le vol de sessions",
-                "Surveillance active et exploitation des journaux de pare-feux réseaux"
+                "Maintenance corrective et préventive du parc machines et des commutateurs réseau",
+                "Surveillance des journaux et sécurisation de landing pages (anti vol de session)"
               ]
             }
           ]
@@ -136,9 +157,8 @@ export default function CVPage({ onBack }: CVPageProps) {
           school: "Université de Yaoundé I, Faculté des Sciences",
           date: "2025 - Présent",
           points: [
-            "Approfondissement en algorithmique avancée, structures de données complexes et programmation système C/C++",
-            "Bases de la cryptographie théorique, protocoles de chiffrement et sécurité réseau",
-            "Automatisation de maintenance, analyse de logs avec Python et scripts shell Bash"
+            "Algorithmique avancée, structures de données complexes et programmation système C/C++",
+            "Bases de la cryptographie, protocoles de chiffrement et sécurité réseau"
           ]
         },
         {
@@ -146,9 +166,8 @@ export default function CVPage({ onBack }: CVPageProps) {
           school: "Université de Yaoundé I, Faculté des Sciences",
           date: "2024 - 2025",
           points: [
-            "Algorithmique fondamentale et implémentations appliquées en langage C",
-            "Bases solides du web standard (HTML5, CSS3, ES6 JavaScript) et design réactif",
-            "Modélisation de schémas physiques de données et écriture de requêtes SQL relationnelles complexes"
+            "Algorithmique fondamentale et implémentations en langage C",
+            "Web standard (HTML5, CSS3, ES6), design réactif et bases de données SQL"
           ]
         }
       ],
@@ -178,7 +197,7 @@ export default function CVPage({ onBack }: CVPageProps) {
       educationTitle: "Education",
       certificationsTitle: "Certifications",
       referencesTitle: "References",
-      profileDesc: "Dedicated undergraduate in CS (Licence 2) at the University of Yaoundé I. Merging modern responsive web architecture engineering (React, Node.js) with meticulous security threat assessment to build high-performance, resilient, and inherently shielded digital solutions.",
+      profileDesc: "Undergraduate in CS (Licence 2) at the University of Yaoundé I. React/Node.js web developer and security analyst building high-performance, resilient, and secure-by-default applications.",
       contacts: [
         { icon: "user", label: "Pierre Tchinda", value: "Pierre Tchinda" },
         { icon: "mail", label: "Email", value: "pierre.tchinda@facsciences-uy1.cm", href: "mailto:pierre.tchinda@facsciences-uy1.cm" },
@@ -217,13 +236,12 @@ export default function CVPage({ onBack }: CVPageProps) {
           company: "Independent Services",
           location: "Yaoundé",
           date: "from 2025 to Present",
-          summary: "Designing and shipping responsive reactive web solutions and secure-by-default software architectures for clients and academic projects.",
+          summary: "Designing responsive web solutions and secure-by-default software architectures for clients and academic projects.",
           categories: [
             {
               title: "Web Engineering & Design :",
               points: [
-                "Building complex administrative reactive dashboards in React and TypeScript",
-                "Crafting scalable modular UI components with optimized rendering",
+                "Building complex administrative dashboards in React and TypeScript",
                 "Deploying reproducible development and production containers using Docker"
               ]
             },
@@ -231,8 +249,7 @@ export default function CVPage({ onBack }: CVPageProps) {
               title: "Application Security & OWASP :",
               points: [
                 "Strict adherence to OWASP Top 10 guidelines (anti-XSS, CSRF, input sanitization)",
-                "Robust session management and role-based access control implementations",
-                "Continuous security compliance audits and code review routines"
+                "Robust session management, role-based access control, and code review"
               ]
             }
           ]
@@ -242,14 +259,13 @@ export default function CVPage({ onBack }: CVPageProps) {
           company: "UY1 Technical Group",
           location: "Faculty of Sciences, Yaoundé",
           date: "from June 2025 to Aug 2025",
-          summary: "IT infrastructure upkeep, network switch maintenance and web system shielding.",
+          summary: "IT infrastructure upkeep, network switch maintenance, and web system shielding.",
           categories: [
             {
               title: "Infrastructure & Network support :",
               points: [
                 "Preventive and corrective maintenance of computer labs and network switches",
-                "Coding secure landing pages shielded against session hijacking",
-                "Active monitoring and analysis of firewall security logs"
+                "Firewall log monitoring and secure landing pages (anti session hijacking)"
               ]
             }
           ]
@@ -261,9 +277,8 @@ export default function CVPage({ onBack }: CVPageProps) {
           school: "University of Yaoundé I, Faculty of Sciences",
           date: "2025 - Present",
           points: [
-            "Advanced studies in algorithms, complex data structures, and system level languages (C/C++)",
-            "Theoretical cryptographic foundations, encryption protocols, and network routing security",
-            "System administration automation and log analysis using Python and Bash shell scripts"
+            "Advanced algorithms, complex data structures, and system level languages (C/C++)",
+            "Cryptography foundations, encryption protocols, and network security"
           ]
         },
         {
@@ -271,9 +286,8 @@ export default function CVPage({ onBack }: CVPageProps) {
           school: "University of Yaoundé I, Faculty of Sciences",
           date: "2024 - 2025",
           points: [
-            "Foundations of algorithms design and applied program implementation in C",
-            "Solid grounding in standard web practices (HTML5, CSS3, ES6 JavaScript) and responsive layout",
-            "Relational physical database schemas and complex SQL querying"
+            "Algorithms design and applied program implementation in C",
+            "Standard web practices (HTML5, CSS3, ES6), responsive design, and SQL databases"
           ]
         }
       ],
@@ -331,7 +345,7 @@ export default function CVPage({ onBack }: CVPageProps) {
   };
 
   return (
-    <div className={`min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:bg-white print:text-black print:p-0 transition-colors duration-300 ${
+    <div className={`min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:bg-white print:text-black print:p-0 print:min-h-0 transition-colors duration-300 ${
       isDarkMode ? "bg-[#030712] text-white" : "bg-slate-100/70 text-black"
     }`}>
       
@@ -392,7 +406,7 @@ export default function CVPage({ onBack }: CVPageProps) {
       </div>
 
       {/* Main Resume Sheet - exact match to user template: Left column (34%) + Right column (66%) */}
-      <article className={`max-w-4xl mx-auto rounded-none sm:rounded-2xl overflow-hidden shadow-2xl relative grid grid-cols-1 md:grid-cols-12 min-h-[1100px] print:shadow-none print:border-none print:rounded-none print:max-w-full transition-all duration-300 ${
+      <article ref={sheetRef} className={`cv-sheet max-w-4xl mx-auto rounded-none sm:rounded-2xl overflow-hidden shadow-2xl relative grid grid-cols-1 md:grid-cols-12 min-h-[1100px] print:shadow-none print:border-none print:rounded-none print:max-w-full print:p-0 print:min-h-0 transition-all duration-300 ${
         isDarkMode ? "bg-[#0b121e] border border-slate-800" : "bg-white border border-slate-300"
       }`}>
         

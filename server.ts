@@ -9,6 +9,8 @@ import {
   getPostById,
   toggleLike,
   addComment,
+  deleteComment,
+  deletePost,
   createPost,
   saveContact,
   db,
@@ -17,9 +19,79 @@ import {
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 
 app.use(express.json());
+
+// ── Security helpers (see upDate.md audit) ──────────────────────────────────
+
+function rateLimit({ windowMs = 60_000, max = 20 }) {
+  const hits = new Map<string, number[]>();
+  const cleanup = setInterval(() => {
+    const cutoff = Date.now() - windowMs;
+    for (const [key, ts] of hits) {
+      const kept = ts.filter((t) => t > cutoff);
+      if (kept.length) hits.set(key, kept);
+      else hits.delete(key);
+    }
+  }, windowMs);
+  cleanup.unref();
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const key = req.ip || req.socket.remoteAddress || "unknown";
+    const now = Date.now();
+    const cutoff = now - windowMs;
+    const ts = (hits.get(key) || []).filter((t) => t > cutoff);
+    if (ts.length >= max) {
+      return res.status(429).json({ error: "Trop de requêtes. Veuillez réessayer dans quelques instants." });
+    }
+    ts.push(now);
+    hits.set(key, ts);
+    next();
+  };
+}
+
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+function requireAdmin(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const expected = process.env.ADMIN_KEY;
+  if (!expected) {
+    console.warn("ADMIN_KEY n'est pas défini : création d'articles désactivée.");
+    return res.status(503).json({ error: "Création d'articles indisponible : ADMIN_KEY non configurée côté serveur." });
+  }
+  const provided = req.get("x-admin-key") || "";
+  if (!safeEqual(provided, expected)) {
+    return res.status(401).json({ error: "Non autorisé : clé d'administration invalide." });
+  }
+  next();
+}
+
+const LIMITS = {
+  title: 200,
+  excerpt: 500,
+  content: 50_000,
+  readTime: 20,
+  category: 50,
+  author: 100,
+  comment: 2_000,
+  contactName: 100,
+  contactSubject: 200,
+  contactMessage: 5_000,
+};
+
+function withinLimits(obj: Record<string, unknown>, limits: Record<string, number>) {
+  for (const [field, max] of Object.entries(limits)) {
+    const val = obj[field];
+    if (typeof val === "string" && val.length > max) {
+      return `${field} ne doit pas dépasser ${max} caractères (reçu ${val.length}).`;
+    }
+  }
+  return null;
+}
 
 const SEED_POSTS = [
   {
@@ -43,7 +115,7 @@ Choisir le bon framework dépend bien sûr de vos besoins spécifiques, mais pou
     date: "2026-05-18",
     readTime: "4 min",
     category: "Mobile",
-    likes: 12,
+    likes: 0,
     comments: [
       { author: "Stéphane", text: "Super article ! Entièrement d'accord sur le rôle d'Expo dans la rapidité de prototypage.", date: "2026-05-19" }
     ]
@@ -65,7 +137,7 @@ Si vous écrivez du Node/Express sur le backend, associer TypeScript rend vos ro
     date: "2026-04-30",
     readTime: "6 min",
     category: "TypeScript",
-    likes: 8,
+    likes: 0,
     comments: []
   },
   {
@@ -87,7 +159,7 @@ En appliquant ces trois méthodes sur l'un de mes projets d'école, la vitesse d
     date: "2026-03-12",
     readTime: "5 min",
     category: "Backend",
-    likes: 15,
+    likes: 0,
     comments: [
       { author: "Marie", text: "L'explication sur le Connection Pool est très claire. Merci Pierre !", date: "2026-03-15" }
     ]
@@ -380,7 +452,7 @@ function getSimulatedResponse(messages: any[], isFr?: boolean): string {
 }
 
 // API routes first
-app.post("/api/chat", async (req, res) => {
+app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res) => {
   try {
     const { messages, isFr } = req.body;
     if (!messages || !Array.isArray(messages)) {
@@ -388,9 +460,9 @@ app.post("/api/chat", async (req, res) => {
     }
 
     if (!ai) {
-      console.log("Simulating response because GEMINI_API_KEY is not configured or failed to initialize.");
+      console.warn("[Chat] GEMINI_API_KEY absent : réponse simulée renvoyée (mode dégradé).");
       const simulatedResponse = getSimulatedResponse(messages, isFr);
-      return res.json({ text: simulatedResponse });
+      return res.json({ text: simulatedResponse, simulated: true });
     }
 
     // Convert message history to format expected by contents
@@ -411,18 +483,19 @@ app.post("/api/chat", async (req, res) => {
       });
 
       if (response && response.text) {
-        return res.json({ text: response.text });
+        return res.json({ text: response.text, simulated: false });
       } else {
         throw new Error("No text response returned from Gemini.");
       }
-    } catch (_geminiError: any) {
-      // Fallback seamlessly using local smart response generator
+    } catch (geminiError: any) {
+      console.warn("[Chat] Appel Gemini échoué, bascule sur réponse simulée :", geminiError?.message || geminiError);
       const simulatedResponse = getSimulatedResponse(messages, isFr);
-      return res.json({ text: simulatedResponse });
+      return res.json({ text: simulatedResponse, simulated: true });
     }
-  } catch (_error: any) {
+  } catch (error: any) {
+    console.warn("[Chat] Erreur inattendue :", error?.message || error);
     const fallbackResponse = getSimulatedResponse(req.body.messages || [], req.body.isFr);
-    return res.json({ text: fallbackResponse });
+    return res.json({ text: fallbackResponse, simulated: true });
   }
 });
 
@@ -431,7 +504,7 @@ app.get("/api/blog", (req, res) => {
   res.json(getAllPosts());
 });
 
-app.post("/api/blog/:id/like", (req, res) => {
+app.post("/api/blog/:id/like", rateLimit({ windowMs: 60_000, max: 30 }), (req, res) => {
   const { id } = req.params;
   const likes = toggleLike(id);
   if (likes !== null) {
@@ -440,11 +513,15 @@ app.post("/api/blog/:id/like", (req, res) => {
   res.status(404).json({ error: "Post non trouvé." });
 });
 
-app.post("/api/blog/:id/comment", (req, res) => {
+app.post("/api/blog/:id/comment", rateLimit({ windowMs: 60_000, max: 10 }), (req, res) => {
   const { id } = req.params;
   const { author, text } = req.body;
   if (!author || !text) {
     return res.status(400).json({ error: "Veuillez fournir un auteur et un texte." });
+  }
+  const commentErr = withinLimits({ author, text }, { author: LIMITS.author, text: LIMITS.comment });
+  if (commentErr) {
+    return res.status(400).json({ error: commentErr });
   }
   if (!getPostById(id)) {
     return res.status(404).json({ error: "Post non trouvé." });
@@ -453,24 +530,64 @@ app.post("/api/blog/:id/comment", (req, res) => {
   return res.json({ success: true, comment: newComment });
 });
 
-// Create new blog post (persisted in SQLite database)
-app.post("/api/blog", (req, res) => {
+// Delete a blog comment — requires the admin secret (owner only)
+app.delete("/api/blog/comments/:id", rateLimit({ windowMs: 60_000, max: 10 }), requireAdmin, (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({ error: "Identifiant de commentaire invalide." });
+  }
+  if (!deleteComment(id)) {
+    return res.status(404).json({ error: "Commentaire introuvable." });
+  }
+  return res.json({ success: true });
+});
+
+// Validate the admin key before opening the editor (no side effect)
+app.post("/api/blog/verify", rateLimit({ windowMs: 60_000, max: 10 }), requireAdmin, (_req, res) => {
+  res.json({ ok: true });
+});
+
+// Create new blog post (persisted in SQLite database) — requires admin secret
+app.post("/api/blog", requireAdmin, rateLimit({ windowMs: 60_000, max: 5 }), (req, res) => {
   const { title, excerpt, content, category, readTime } = req.body;
   if (!title || !excerpt || !content) {
     return res.status(400).json({ error: "Champs obligatoires manquants." });
+  }
+  const fieldErr = withinLimits(
+    { title, excerpt, content, readTime: readTime || "", category: category || "" },
+    { title: LIMITS.title, excerpt: LIMITS.excerpt, content: LIMITS.content, readTime: LIMITS.readTime, category: LIMITS.category }
+  );
+  if (fieldErr) {
+    return res.status(400).json({ error: fieldErr });
   }
   const newPost = createPost({ title, excerpt, content, category, readTime });
   res.status(201).json(newPost);
 });
 
+// Delete a blog post — requires the admin secret (owner only). Comments are cascaded.
+app.delete("/api/blog/:id", rateLimit({ windowMs: 60_000, max: 10 }), requireAdmin, (req, res) => {
+  const { id } = req.params;
+  if (!deletePost(id)) {
+    return res.status(404).json({ error: "Article introuvable." });
+  }
+  return res.json({ success: true });
+});
+
 // Contact form: persist every submission and forward by email when SMTP is configured
-app.post("/api/contact", (req, res) => {
+app.post("/api/contact", rateLimit({ windowMs: 60_000, max: 10 }), (req, res) => {
   const { name, email, subject, message } = req.body || {};
   if (!name || !email || !message) {
     return res.status(400).json({ error: "Veuillez fournir un nom, un e-mail et un message." });
   }
   if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: "Adresse e-mail invalide." });
+  }
+  const contactErr = withinLimits(
+    { name, subject: subject || "", message },
+    { name: LIMITS.contactName, subject: LIMITS.contactSubject, message: LIMITS.contactMessage }
+  );
+  if (contactErr) {
+    return res.status(400).json({ error: contactErr });
   }
 
   const id = saveContact({ name, email, subject: subject || "", message });
@@ -525,7 +642,9 @@ app.post("/api/contact", (req, res) => {
     });
 });
 
-// Vite middleware flow
+// Vite middleware flow — only run when executed directly (skip when imported for tests)
+export { app };
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -548,4 +667,10 @@ async function startServer() {
   });
 }
 
-startServer();
+const isDirectRun =
+  typeof process.argv[1] === "string" &&
+  (process.argv[1].endsWith("server.ts") || process.argv[1].endsWith("server.cjs"));
+
+if (isDirectRun) {
+  startServer();
+}

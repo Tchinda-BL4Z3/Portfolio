@@ -456,3 +456,116 @@ html.dark body,
   color: #7cedeb !important;
 }
 
+/* ==========================================================================
+   CV PRINT / PDF: exact A4 rendering (light theme, single page)
+   ========================================================================== */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  /* Force background colors (teal header, cyan sidebar, rating dots)
+     to render even when the print dialog hides them by default. */
+  *,
+  *::before,
+  *::after {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* ======================================================================
+     CV single-page compaction: shrink the resume layout so its raw
+     (un-zoomed) height fits one A4 sheet, regardless of zoom support.
+     ====================================================================== */
+  .cv-sheet {
+    font-size: 12px; /* scales all rem-based Tailwind sizing */
+    padding: 0 !important;
+  }
+
+  .cv-sheet h1 {
+    font-size: 20px !important;
+  }
+
+  .cv-sheet h2 {
+    font-size: 17px !important;
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+    padding-bottom: 3px !important;
+  }
+
+  .cv-sheet h3 {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .cv-sheet p,
+  .cv-sheet li,
+  .cv-sheet span,
+  .cv-sheet a {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Article: tighten outer padding */
+  .cv-sheet > main,
+  .cv-sheet > aside {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  /* Sidebar top header: shrink the teal block & avatar overhang */
+  .cv-sheet aside .pt-8 { padding-top: 10px; }
+  .cv-sheet aside .pb-24,
+  .cv-sheet aside .pb-28 { padding-bottom: 20px; }
+  .cv-sheet aside .pt-20,
+  .cv-sheet aside .pt-22 { padding-top: 6px; }
+  .cv-sheet aside .w-28,
+  .cv-sheet aside .h-28,
+  .cv-sheet aside .w-32,
+  .cv-sheet aside .h-32 { width: 52px !important; height: 52px !important; }
+  .cv-sheet aside .-bottom-14,
+  .cv-sheet aside .-bottom-16 { bottom: -26px; }
+
+  /* Sidebar spacing: personal info, skills, qualities, hobbies, languages */
+  .cv-sheet aside .px-6,
+  .cv-sheet aside .px-7 { padding-left: 13px; padding-right: 13px; }
+  .cv-sheet aside section { margin-top: 5px !important; }
+  .cv-sheet aside section h3 { margin-bottom: 1px !important; }
+  .cv-sheet aside .space-y-6 > * + * { margin-top: 3px !important; }
+  .cv-sheet aside .space-y-3 > * + * { margin-top: 2px !important; }
+  .cv-sheet aside .space-y-2\.5 > * + * { margin-top: 2px !important; }
+  .cv-sheet aside .space-y-2 > * + * { margin-top: 2px !important; }
+  .cv-sheet aside .pt-1 { padding-top: 1px !important; }
+
+  /* Main column spacing: profile / experience / education / certs / refs */
+  .cv-sheet main .p-7,
+  .cv-sheet main .sm\:p-9,
+  .cv-sheet main .lg\:p-10 { padding: 10px 16px !important; }
+  .cv-sheet main .space-y-7 > * + * { margin-top: 8px !important; }
+  .cv-sheet main .space-y-5 > * + * { margin-top: 5px !important; }
+  .cv-sheet main .space-y-4 > * + * { margin-top: 4px !important; }
+  .cv-sheet main .space-y-3\.5 > * + * { margin-top: 3px !important; }
+  .cv-sheet main .space-y-3 > * + * { margin-top: 3px !important; }
+  .cv-sheet main .space-y-2 > * + * { margin-top: 2px !important; }
+  .cv-sheet main .space-y-1\.5 > * + * { margin-top: 1px !important; }
+  .cv-sheet main ul { margin-top: 1px !important; }
+  .cv-sheet main ul li { margin-top: 1px !important; }
+  .cv-sheet main .pt-1 { padding-top: 0 !important; }
+  .cv-sheet main .pt-2 { padding-top: 1px !important; }
+  .cv-sheet main .pt-1\.5 { padding-top: 1px !important; }
+
+  /* Bottom flourish + footer spacing */
+  .cv-sheet .mt-8 { margin-top: 5px !important; }
+  .cv-sheet .mt-7 { margin-top: 4px !important; }
+  .cv-sheet .pt-4 { padding-top: 3px !important; }
+
+  /* Cert / reference cards */
+  .cv-sheet .p-2\.5 { padding: 4px !important; }
+}
+

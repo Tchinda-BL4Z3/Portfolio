@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import htmlCssPdf from "./certification/Coursera YSFMHPJLFWQ8.pdf";
 import aiFundamentalsPdf from "./certification/Coursera YY5XVWYEGXM0.pdf";
+import programmingJavaPdf from "./certification/Coursera 7YD2H6OK7U2O.pdf";
 import htmlCssPreview from "./certification/cert_html_css_p.jpg";
 import aiFundamentalsPreview from "./certification/cert_ai_fundamentals_p.jpg";
+import programmingJavaPreview from "./certification/cert_programming_java_p.jpg";
+import htmlCssHi from "./certification/html_css_hi.jpg";
+import aiFundamentalsHi from "./certification/ai_fund_hi.jpg";
+import programmingJavaHi from "./certification/programming_java_hi.jpg";
 import portfolioSiteImage from "./assets/images/portfolio_site.webp";
 
 const hobbyImages = import.meta.glob("./hobbies/**/*.{jpg,jpeg,png,webp}", {
@@ -203,6 +208,7 @@ title: "HTML and CSS in depth",
           credentialId: "YSFMHPJLFWQ8",
           url: "https://coursera.org/verify/YSFMHPJLFWQ8",
           image: htmlCssPreview,
+          largeImage: htmlCssHi,
           pdfPath: htmlCssPdf
         },
         {
@@ -213,7 +219,19 @@ title: "HTML and CSS in depth",
           credentialId: "YY5XVWYEGXM0",
           url: "https://coursera.org/verify/YY5XVWYEGXM0",
           image: aiFundamentalsPreview,
+          largeImage: aiFundamentalsHi,
           pdfPath: aiFundamentalsPdf
+        },
+        {
+          id: "cert-3",
+          title: "Programming with Java",
+          issuer: "Amazon (via Coursera)",
+          description: "Apprentissage complet du langage Java : structures de données essentielles, programmation orientée objet, gestion des exceptions et développement d'applications Java robustes et maintenables.",
+          credentialId: "7YD2H6OK7U2O",
+          url: "https://coursera.org/verify/7YD2H6OK7U2O",
+          image: programmingJavaPreview,
+          largeImage: programmingJavaHi,
+          pdfPath: programmingJavaPdf
         }
       ]
     },
@@ -435,6 +453,7 @@ title: "HTML and CSS in depth",
           credentialId: "YSFMHPJLFWQ8",
           url: "https://coursera.org/verify/YSFMHPJLFWQ8",
           image: htmlCssPreview,
+          largeImage: htmlCssHi,
           pdfPath: htmlCssPdf
         },
         {
@@ -445,7 +464,19 @@ title: "HTML and CSS in depth",
           credentialId: "YY5XVWYEGXM0",
           url: "https://coursera.org/verify/YY5XVWYEGXM0",
           image: aiFundamentalsPreview,
+          largeImage: aiFundamentalsHi,
           pdfPath: aiFundamentalsPdf
+        },
+        {
+          id: "cert-3",
+          title: "Programming with Java",
+          issuer: "Amazon (via Coursera)",
+          description: "Comprehensive Java training: essential data structures, object-oriented programming, exception handling, and building robust, maintainable Java applications.",
+          credentialId: "7YD2H6OK7U2O",
+          url: "https://coursera.org/verify/7YD2H6OK7U2O",
+          image: programmingJavaPreview,
+          largeImage: programmingJavaHi,
+          pdfPath: programmingJavaPdf
         }
       ]
     },

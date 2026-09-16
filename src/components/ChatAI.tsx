@@ -94,7 +94,8 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
         content: data.text || (isFr 
           ? "Désolé, je n'ai pas pu générer de réponse intelligible." 
           : "Sorry, I was unable to compile a clear response at this moment."),
-        timestamp: new Date()
+        timestamp: new Date(),
+        simulated: !!data.simulated
       };
 
       setMessages(prev => [...prev, responseMsg]);
@@ -185,6 +186,15 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
               }`}
             >
               {msg.content}
+              {msg.simulated && (
+                <div className={`mt-2 pt-2 border-t text-[10px] font-mono font-medium ${
+                  msg.role === "user"
+                    ? "border-slate-700 text-slate-300"
+                    : "border-slate-100 text-slate-400"
+                }`}>
+                  {isFr ? "Réponse dégradée (mode local)" : "Degraded response (local mode)"}
+                </div>
+              )}
             </div>
           </div>
         ))}

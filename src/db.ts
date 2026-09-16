@@ -102,8 +102,16 @@ export function getAllComments(postId: string): CommentRow[] {
     .all(postId) as CommentRow[];
 }
 
+function todayLocal(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export function addComment(postId: string, author: string, text: string) {
-  const date = new Date().toISOString().split("T")[0];
+  const date = todayLocal();
   const info = db
     .prepare("INSERT INTO comments (post_id, author, text, date) VALUES (?, ?, ?, ?)")
     .run(postId, author, text, date);
@@ -111,6 +119,16 @@ export function addComment(postId: string, author: string, text: string) {
     .prepare("SELECT * FROM comments WHERE id = ?")
     .get(info.lastInsertRowid) as CommentRow;
   return row;
+}
+
+export function deleteComment(commentId: number): boolean {
+  const info = db.prepare("DELETE FROM comments WHERE id = ?").run(commentId);
+  return info.changes > 0;
+}
+
+export function deletePost(postId: string): boolean {
+  const info = db.prepare("DELETE FROM posts WHERE id = ?").run(postId);
+  return info.changes > 0;
 }
 
 export function createPost(input: {
@@ -121,7 +139,7 @@ export function createPost(input: {
   readTime?: string;
 }) {
   const id = `post-${Date.now()}`;
-  const date = new Date().toISOString().split("T")[0];
+  const date = todayLocal();
   db.prepare(
     `INSERT INTO posts (id, title, excerpt, content, date, read_time, category, likes)
      VALUES (?, ?, ?, ?, ?, ?, ?, 0)`

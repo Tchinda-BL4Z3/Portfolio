@@ -61,10 +61,10 @@ export default function Certifications() {
                 {/* Visual Certificate Frame */}
                 <div
                   className={`relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-5 border border-slate-150 shadow-sm ${
-                    cert.pdfPath ? "bg-slate-100 cursor-pointer hover:border-teal-400 group/pdf" : "bg-slate-100"
+                    cert.image ? "bg-slate-100 cursor-pointer hover:border-teal-400 group/pdf" : "bg-slate-100"
                   }`}
                   onClick={() => {
-                    if (cert.pdfPath) setViewerCert(cert);
+                    if (cert.image) setViewerCert(cert);
                   }}
                 >
                   <img
@@ -115,7 +115,7 @@ export default function Certifications() {
 
               {/* Action Buttons */}
               <div className="mt-2 flex flex-col gap-2">
-                {cert.pdfPath && (
+                {cert.image && (
                   <button
                     onClick={() => setViewerCert(cert)}
                     className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
@@ -185,11 +185,14 @@ export default function Certifications() {
           </div>
         )}
 
-      {/* PDF Viewer Modal */}
+      {/* Certification Large Image Modal (no PDF toolbar / download / drive options) */}
         {viewerCert && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
-              {/* Modal Header */}
+          <div
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto"
+            onClick={() => setViewerCert(null)}
+          >
+            <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl relative border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+              {/* Minimal header: title + close */}
               <div className="flex items-center justify-between gap-4 p-5 border-b border-slate-100 shrink-0">
                 <div className="min-w-0">
                   <h3 className="font-display font-semibold text-base text-slate-900 truncate">
@@ -209,42 +212,13 @@ export default function Certifications() {
                 </button>
               </div>
 
-              {/* PDF Embed */}
-              <div className="flex-1 min-h-[60vh] bg-slate-100">
-                <iframe
-                  src={viewerCert.pdfPath}
-                  title={viewerCert.title}
-                  className="w-full h-full min-h-[60vh]"
+              {/* Large image only, nothing else */}
+              <div className="flex-1 min-h-[50vh] bg-slate-100 flex items-center justify-center p-3 sm:p-5 overflow-hidden">
+                <img
+                  src={viewerCert.largeImage || viewerCert.image}
+                  alt={viewerCert.title}
+                  className="max-w-full max-h-[72vh] w-auto h-auto object-contain rounded-lg shadow-md"
                 />
-              </div>
-
-              {/* Modal Footer */}
-              <div className="flex flex-wrap items-center justify-between gap-3 p-5 border-t border-slate-100 shrink-0">
-                <span className="font-mono text-[11px] text-slate-400">
-                  {viewerCert.credentialId ? `ID : ${viewerCert.credentialId}` : ""}
-                </span>
-                <div className="flex items-center gap-2">
-                  {viewerCert.url && (
-                    <a
-                      href={viewerCert.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-xs transition-all cursor-pointer"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>{isFr ? "Vérifier sur Coursera" : "Verify on Coursera"}</span>
-                    </a>
-                  )}
-                  <a
-                    href={viewerCert.pdfPath}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium text-xs transition-all cursor-pointer"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>{isFr ? "Ouvrir le PDF" : "Open PDF"}</span>
-                  </a>
-                </div>
               </div>
             </div>
           </div>
