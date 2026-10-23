@@ -2,12 +2,15 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import htmlCssPdf from "./certification/Coursera YSFMHPJLFWQ8.pdf";
 import aiFundamentalsPdf from "./certification/Coursera YY5XVWYEGXM0.pdf";
 import programmingJavaPdf from "./certification/Coursera 7YD2H6OK7U2O.pdf";
+import automationPythonPdf from "./certification/Coursera W3A9DBZ8IJHQ.pdf";
 import htmlCssPreview from "./certification/cert_html_css_p.jpg";
 import aiFundamentalsPreview from "./certification/cert_ai_fundamentals_p.jpg";
 import programmingJavaPreview from "./certification/cert_programming_java_p.jpg";
+import automationPythonPreview from "./certification/cert_automation_python_p.jpg";
 import htmlCssHi from "./certification/html_css_hi.jpg";
 import aiFundamentalsHi from "./certification/ai_fund_hi.jpg";
 import programmingJavaHi from "./certification/programming_java_hi.jpg";
+import automationPythonHi from "./certification/automation_python_hi.jpg";
 import portfolioSiteImage from "./assets/images/portfolio_site.webp";
 
 const hobbyImages = import.meta.glob("./hobbies/**/*.{jpg,jpeg,png,webp}", {
@@ -232,6 +235,17 @@ title: "HTML and CSS in depth",
           image: programmingJavaPreview,
           largeImage: programmingJavaHi,
           pdfPath: programmingJavaPdf
+        },
+        {
+          id: "cert-4",
+          title: "Automation and Scripting with Python",
+          issuer: "Microsoft (via Coursera)",
+          description: "Automatisation de tâches avec Python : écriture de scripts robustes, manipulation de fichiers et de données, et automatisation des workflows pour gagner en efficacité.",
+          credentialId: "W3A9DBZ8IJHQ",
+          url: "https://coursera.org/verify/W3A9DBZ8IJHQ",
+          image: automationPythonPreview,
+          largeImage: automationPythonHi,
+          pdfPath: automationPythonPdf
         }
       ]
     },
@@ -477,6 +491,17 @@ title: "HTML and CSS in depth",
           image: programmingJavaPreview,
           largeImage: programmingJavaHi,
           pdfPath: programmingJavaPdf
+        },
+        {
+          id: "cert-4",
+          title: "Automation and Scripting with Python",
+          issuer: "Microsoft (via Coursera)",
+          description: "Task automation with Python: writing robust scripts, handling files and data, and automating workflows to boost efficiency.",
+          credentialId: "W3A9DBZ8IJHQ",
+          url: "https://coursera.org/verify/W3A9DBZ8IJHQ",
+          image: automationPythonPreview,
+          largeImage: automationPythonHi,
+          pdfPath: automationPythonPdf
         }
       ]
     },

@@ -113,12 +113,12 @@ export default function Certifications() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="mt-2 flex flex-col gap-2">
+              {/* Action Buttons: view (left) + verify redirect icon (right) */}
+              <div className="mt-2 flex flex-row items-stretch gap-2">
                 {cert.image && (
                   <button
                     onClick={() => setViewerCert(cert)}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
                   >
                     <FileText className="w-3.5 h-3.5 text-teal-400" />
                     <span className="font-sans">{isFr ? "Voir la certification" : "View certification"}</span>
@@ -129,10 +129,11 @@ export default function Certifications() {
                     href={cert.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-medium text-xs transition-all cursor-pointer"
+                    title={t("certifications.verify_button") || (isFr ? "Vérifier la certification" : "Verify Certification")}
+                    aria-label={t("certifications.verify_button") || (isFr ? "Vérifier la certification" : "Verify Certification")}
+                    className="shrink-0 inline-flex items-center justify-center w-10 rounded-xl bg-slate-900 hover:bg-teal-600 text-white transition-all cursor-pointer"
                   >
-                    <span className="font-sans">{t("certifications.verify_button") || (isFr ? "Vérifier la certification" : "Verify Certification")}</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                    <ExternalLink className="w-4 h-4 text-slate-400" />
                   </a>
                 )}
               </div>
