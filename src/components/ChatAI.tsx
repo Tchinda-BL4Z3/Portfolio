@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { MessageSquare, Sparkles, Send, Bot, User, Smartphone, GraduationCap, Zap, Briefcase } from "lucide-react";
 import { ChatMessage } from "../types";
 import { useLanguage } from "../LanguageContext";
+import { apiUrl } from "../api";
 
 interface ChatAIProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
         content: msg.content
       }));
 
-      const res = await fetch("/api/chat", {
+      const res = await fetch(apiUrl("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: payloadMessages, isFr })

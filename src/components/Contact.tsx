@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Mail, Github, Linkedin, Send, CheckCircle2, MessageSquare, Clipboard, Facebook, Loader2 } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
+import { apiUrl } from "../api";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -23,7 +24,7 @@ export default function Contact() {
     setIsError(false);
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch(apiUrl("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, subject, message }),

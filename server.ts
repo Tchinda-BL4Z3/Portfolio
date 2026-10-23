@@ -23,6 +23,30 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.use(express.json());
 
+// ── CORS: the frontend can be hosted on another origin (e.g. GitHub Pages) ──
+// Set ALLOWED_ORIGINS to a comma-separated list, or leave it unset for "*".
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "*")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes("*")) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  } else if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-key");
+  res.setHeader("Access-Control-Max-Age", "600");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 // ── Security helpers (see upDate.md audit) ──────────────────────────────────
 
 function rateLimit({ windowMs = 60_000, max = 20 }) {
@@ -646,7 +670,9 @@ app.post("/api/contact", rateLimit({ windowMs: 60_000, max: 10 }), (req, res) =>
 export { app };
 
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.API_ONLY === "true") {
+    console.log("API-only mode: static frontend serving disabled.");
+  } else if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",

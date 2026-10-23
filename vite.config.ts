@@ -5,6 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // GitHub Pages serves project sites under /<repo>/. Only used in CI.
+    base: process.env.GITHUB_PAGES === "true" ? "/Portfolio/" : "/",
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { BlogPost, BlogComment } from "../types";
 import { useLanguage } from "../LanguageContext";
+import { apiUrl } from "../api";
 
 // Format a "YYYY-MM-DD" date as a real, localized creation date (fr: "16 septembre 2026").
 // Parsed as local midnight so the calendar day is never shifted by timezones.
@@ -146,7 +147,7 @@ export default function Blog() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("/api/blog");
+      const res = await fetch(apiUrl("/api/blog"));
       if (!res.ok) {
         throw new Error("Erreur de récupération des articles");
       }
@@ -163,7 +164,7 @@ export default function Blog() {
   const handleLike = async (postId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     try {
-      const res = await fetch(`/api/blog/${postId}/like`, { method: "POST" });
+      const res = await fetch(apiUrl(`/api/blog/${postId}/like`), { method: "POST" });
       if (res.ok) {
         const data = await res.json();
         setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: data.likes } : p));
@@ -194,7 +195,7 @@ export default function Blog() {
 
     try {
       setSubmittingComment(true);
-      const res = await fetch(`/api/blog/${selectedPost.id}/comment`, {
+      const res = await fetch(apiUrl(`/api/blog/${selectedPost.id}/comment`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ author: authorName, text: commentText })
@@ -231,7 +232,7 @@ export default function Blog() {
 
     if (comment.id != null) {
       try {
-        const res = await fetch(`/api/blog/comments/${comment.id}`, {
+        const res = await fetch(apiUrl(`/api/blog/comments/${comment.id}`), {
           method: "DELETE",
           headers: { "Content-Type": "application/json", "x-admin-key": accessibleKey },
         });
@@ -263,7 +264,7 @@ export default function Blog() {
     setDeletingPost(true);
     setDeletePostError(null);
     try {
-      const res = await fetch(`/api/blog/${selectedPost.id}`, {
+      const res = await fetch(apiUrl(`/api/blog/${selectedPost.id}`), {
         method: "DELETE",
         headers: { "Content-Type": "application/json", "x-admin-key": accessibleKey },
       });
@@ -291,7 +292,7 @@ export default function Blog() {
     setCheckingAccess(true);
     setAccessError(null);
     try {
-      const res = await fetch("/api/blog/verify", {
+      const res = await fetch(apiUrl("/api/blog/verify"), {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-key": accessKeyInput.trim() },
         body: JSON.stringify({})
@@ -321,7 +322,7 @@ export default function Blog() {
     try {
       setSubmittingPost(true);
       setPostError(null);
-      const res = await fetch("/api/blog", {
+      const res = await fetch(apiUrl("/api/blog"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
