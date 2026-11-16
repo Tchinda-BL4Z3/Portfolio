@@ -315,7 +315,7 @@ title: "HTML and CSS in depth",
       univ: "Université de Yaoundé I · Licence Informatique"
     },
     chat: {
-      title: "Assistant IA de Pierre",
+      title: "Tchinda2.0",
       status: "Prêt à répondre en direct",
       welcome: "Bonjour ! Je suis l'assistant IA de Pierre Tchinda. Posez-moi des questions sur son parcours en Licence 2, ses compétences en développement web et analyse sécurité, ses projets, ou recrutez-le directement !",
       placeholder: "Écrivez votre message ici...",
@@ -571,7 +571,7 @@ title: "HTML and CSS in depth",
       univ: "University of Yaoundé I · BSc Computer Science"
     },
     chat: {
-      title: "Pierre's AI Assistant",
+      title: "Tchinda2.0",
       status: "Online & Ready",
       welcome: "Hello! I am Pierre Tchinda's AI Assistant. Ask me anything about his Bachelor's studies (Licence 2), his web programming and security analysis skills, his main projects, or feel free to hire him directly!",
       placeholder: "Write your message...",

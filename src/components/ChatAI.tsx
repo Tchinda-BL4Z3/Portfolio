@@ -135,8 +135,8 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
             <Sparkles className="w-5 h-5 text-teal-400" />
           </div>
           <div>
-            <h3 className="font-display font-semibold text-sm tracking-wide">
-              {isFr ? "Assistant IA de Pierre T." : "Pierre T.'s AI Recruiter"}
+            <h3 className="font-mono font-black text-sm tracking-[0.22em] uppercase text-teal-300 drop-shadow-[0_0_12px_rgba(124,237,235,0.6)]">
+              Tchinda<span className="text-white">2.0</span>
             </h3>
             <div className="flex items-center gap-1.5 text-[10px] text-teal-400 font-mono font-bold uppercase tracking-wider">
               <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-ping" />

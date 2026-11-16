@@ -498,7 +498,7 @@ app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res)
     try {
       // Call generateContent with systemic context injected
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
         contents: chatParts,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
