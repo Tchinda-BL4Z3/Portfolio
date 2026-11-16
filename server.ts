@@ -263,7 +263,10 @@ RÈGLE ABSOLUE #3 : CONCISION ET PERTINENCE
 - Répondez DIRECTEMENT à la question posée, en restant sur le sujet. Ne divergez pas vers d'autres thèmes.
 - Soyez concis : 2 à 5 phrases ou une courte liste à puces. Développez seulement si l'utilisateur demande des détails.
 - Évitez les introductions inutiles (« Bien sûr ! », « Voici une excellente question ! ») et les conclusions génériques.
-- N'inventez pas d'informations : si vous ne savez pas, dites-le honnêtement.
+
+RÈGLE ABSOLUE #4 : ABSENCE D'INFORMATION
+- Si vous n'avez pas l'information demandée ou ne savez pas répondre, dites-le CLAIREMENT et BRIÈVEMENT (une phrase), sans inventer ni diverger.
+- Proposez alors une alternative utile (ex. : rediriger vers le sujet de Pierre ou une question technique connexe) en une phrase courte.
 
 À PROPOS DE PIERRE TCHINDA (À utiliser si l'utilisateur vous pose des questions sur Pierre ou son profil) :
 - Rôle : Développeur Web, Programmeur & Analyste Sécurité à Yaoundé (Cameroun).
@@ -420,11 +423,8 @@ function getSimulatedResponse(messages: any[], isFr?: boolean): string {
              "• **Docker** : Plateforme de conteneurisation qui empaquète une application et ses dépendances dans un conteneur isolé.";
     }
 
-    // 6. Réponse générale directe pour toute autre question en Français
-    return `Voici une réponse directe concernant votre question : **« ${rawPrompt} »**\n\n` +
-           `• **Explication** : Pour traiter ce sujet (${rawPrompt}), il est essentiel d'analyser les mécanismes sous-jacents et de structurer la réponse avec méthode.\n` +
-           `• **Détails & Application** : En informatique et ingénierie logicielle, la bonne approche consiste à clarifier les objectifs, valider les règles de fonctionnement et appliquer les normes reconnues.\n\n` +
-           `Si vous avez besoin d'exemples de code ou d'explications plus détaillées sur un point précis, posez-moi simplement la question !`;
+    // 6. Réponse générale : pas d'info précise -> le dire clairement et brièvement
+    return `Je n'ai pas d'information précise sur ce sujet. Je peux vous aider sur les compétences, projets et certifications de Pierre, ou sur des questions techniques (React, SQL, cybersécurité, etc.).`;
   } else {
     // ENGLISH RESPONSES
     if (/^(hello|hi|hey|good morning|good evening)(\s.*)?$/i.test(lastUserMsg) && lastUserMsg.length < 25) {
@@ -475,10 +475,7 @@ function getSimulatedResponse(messages: any[], isFr?: boolean): string {
       return "**SQL (Structured Query Language)** is the standard language for relational database management systems like PostgreSQL, MySQL, and SQLite.";
     }
 
-    return `Here is a direct response regarding **"${rawPrompt}"**:\n\n` +
-           `• **Overview**: Addressing "${rawPrompt}" requires examining core principles and applying best practices.\n` +
-           `• **Key Takeaway**: In software engineering, focusing on clarity, modularity, and correctness brings optimal results.\n\n` +
-           `Feel free to ask for specific code examples or further details!`;
+    return `I don't have specific information on that topic. I can help with Pierre's skills, projects and certifications, or general technical questions (React, SQL, cybersecurity, etc.).`;
   }
 }
 
@@ -526,8 +523,8 @@ app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res)
       ? "CRITICAL: You MUST respond ONLY in English. Do NOT use French or any other language."
       : "CRITIQUE : Vous DEVEZ répondre UNIQUEMENT en français. N'utilisez aucune autre langue.";
     const concisenessDirective = english
-      ? "Be concise and stay on topic: answer the question directly in 2-5 sentences or a short bullet list. No filler introductions or generic conclusions. Do not invent facts."
-      : "Soyez concis et restez sur le sujet : répondez directement en 2 à 5 phrases ou une courte liste à puces. Pas d'introductions inutiles ni de conclusions génériques. N'inventez pas de faits.";
+      ? "Be concise and stay on topic: answer the question directly in 2-5 sentences or a short bullet list. No filler introductions or generic conclusions. Do not invent facts. If you don't have the information, say so clearly and briefly in one sentence, then offer a helpful alternative in one short sentence."
+      : "Soyez concis et restez sur le sujet : répondez directement en 2 à 5 phrases ou une courte liste à puces. Pas d'introductions inutiles ni de conclusions génériques. N'inventez pas de faits. Si vous n'avez pas l'information, dites-le clairement et brièvement en une phrase, puis proposez une alternative utile en une phrase courte.";
     const systemInstruction = `${langDirective}\n${concisenessDirective}\n\n${SYSTEM_INSTRUCTION}`;
 
     try {
@@ -548,7 +545,9 @@ app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res)
       }
     } catch (geminiError: any) {
       console.warn("[Chat] Appel Gemini échoué, bascule sur réponse simulée :", geminiError?.message || geminiError);
-      const simulatedResponse = getSimulatedResponse(messages, isFr);
+      if (geminiError?.cause) console.warn("[Chat] cause :", geminiError.cause?.message || geminiError.cause);
+      if (geminiError?.status) console.warn("[Chat] status :", geminiError.status);
+      const simulatedResponse = getSimulatedResponse(messages, !english);
       return res.json({ text: simulatedResponse, simulated: true });
     }
   } catch (error: any) {
