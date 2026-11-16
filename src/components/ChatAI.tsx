@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MessageSquare, Sparkles, Send, Bot, User, Smartphone, GraduationCap, Zap, Briefcase } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ChatMessage } from "../types";
 import { useLanguage } from "../LanguageContext";
 import { apiUrl } from "../api";
@@ -180,13 +182,63 @@ export default function ChatAI({ isOpen, onClose }: ChatAIProps) {
 
             {/* Bubble itself */}
             <div
-              className={`rounded-2xl p-4 leading-relaxed text-xs sm:text-sm whitespace-pre-wrap shadow-sm ${
+              className={`rounded-2xl p-4 leading-relaxed text-xs sm:text-sm shadow-sm ${
                 msg.role === "user"
-                  ? "bg-slate-900 text-white rounded-tr-none"
-                  : "bg-white text-slate-800 border border-slate-100 rounded-tl-none"
+                  ? "bg-slate-900 text-white rounded-tr-none whitespace-pre-wrap"
+                  : "bg-white text-slate-800 border border-slate-100 rounded-tl-none prose-sm"
               }`}
             >
-              {msg.content}
+              {msg.role === "user" ? (
+                msg.content
+              ) : (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                    strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    code: ({ className, children }) => {
+                      const isBlock = !!className;
+                      return isBlock ? (
+                        <code className="font-mono text-[11px] text-slate-800">{children}</code>
+                      ) : (
+                        <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px] text-slate-800">
+                          {children}
+                        </code>
+                      );
+                    },
+                    pre: ({ children }) => (
+                      <pre className="my-2 overflow-x-auto rounded-lg bg-slate-100 p-2 font-mono text-[11px] leading-relaxed">
+                        {children}
+                      </pre>
+                    ),
+                    ul: ({ children }) => <ul className="mb-2 list-disc space-y-1 pl-4">{children}</ul>,
+                    ol: ({ children }) => <ol className="mb-2 list-decimal space-y-1 pl-4">{children}</ol>,
+                    li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                    h1: ({ children }) => <h1 className="mb-2 text-sm font-bold">{children}</h1>,
+                    h2: ({ children }) => <h2 className="mb-2 text-sm font-bold">{children}</h2>,
+                    h3: ({ children }) => <h3 className="mb-1 text-xs font-bold">{children}</h3>,
+                    a: ({ href, children }) => (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-teal-600 underline hover:text-teal-700">
+                        {children}
+                      </a>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="my-2 border-l-2 border-teal-500 pl-3 italic text-slate-600">{children}</blockquote>
+                    ),
+                    hr: () => <hr className="my-2 border-slate-200" />,
+                    table: ({ children }) => (
+                      <div className="my-2 overflow-x-auto">
+                        <table className="min-w-full border-collapse text-[11px]">{children}</table>
+                      </div>
+                    ),
+                    th: ({ children }) => <th className="border border-slate-200 bg-slate-100 px-2 py-1 text-left font-bold">{children}</th>,
+                    td: ({ children }) => <td className="border border-slate-200 px-2 py-1">{children}</td>,
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
+              )}
               {msg.simulated && (
                 <div className={`mt-2 pt-2 border-t text-[10px] font-mono font-medium ${
                   msg.role === "user"

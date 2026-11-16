@@ -257,6 +257,13 @@ RÈGLE ABSOLUE #1 : RÉPONDEZ DIRECTEMENT ET PRÉCISEMENT À LA QUESTION POSÉE
 
 RÈGLE ABSOLUE #2 : RESPECT STRICT DE LA LANGUE
 - Répondez TOUJOURS dans la MÊME LANGUE que le dernier message de l'utilisateur (Français, Anglais, Espagnol, etc.).
+- Ne mélangez jamais les langues dans une même réponse.
+
+RÈGLE ABSOLUE #3 : CONCISION ET PERTINENCE
+- Répondez DIRECTEMENT à la question posée, en restant sur le sujet. Ne divergez pas vers d'autres thèmes.
+- Soyez concis : 2 à 5 phrases ou une courte liste à puces. Développez seulement si l'utilisateur demande des détails.
+- Évitez les introductions inutiles (« Bien sûr ! », « Voici une excellente question ! ») et les conclusions génériques.
+- N'inventez pas d'informations : si vous ne savez pas, dites-le honnêtement.
 
 À PROPOS DE PIERRE TCHINDA (À utiliser si l'utilisateur vous pose des questions sur Pierre ou son profil) :
 - Rôle : Développeur Web, Programmeur & Analyste Sécurité à Yaoundé (Cameroun).
@@ -475,6 +482,17 @@ function getSimulatedResponse(messages: any[], isFr?: boolean): string {
   }
 }
 
+// Detect whether the last user message is in English (simple heuristic)
+function isEnglishMessage(text: string): boolean | null {
+  const enWords = /\\b(the|is|are|what|how|why|when|where|can|do|does|have|has|with|for|and|or|not|this|that|please|explain|tell|me|you|your|his|her|it|we|they|hello|hi|hey|thanks|thank)\\b/i;
+  const frWords = /\\b(le|la|les|un|une|des|est|sont|que|quoi|comment|pourquoi|quand|où|avec|pour|et|ou|pas|ce|cette|ces|je|tu|il|elle|nous|vous|ils|elles|merci|bonjour|salut|explique|dis|mon|ma|mes|ton|ta|tes|son|sa|ses)\\b/i;
+  const enCount = (text.match(enWords) || []).length;
+  const frCount = (text.match(frWords) || []).length;
+  if (enCount > frCount) return true;
+  if (frCount > enCount) return false;
+  return null as any; // tie -> use isFr hint
+}
+
 // API routes first
 app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res) => {
   try {
@@ -483,9 +501,17 @@ app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res)
       return res.status(400).json({ error: "Format invalide. 'messages' doit être un tableau d'historique." });
     }
 
+    const lastUserMsg = [...messages].reverse().find((m: any) => m.role === "user")?.content || "";
+
+    // Detect language of the last user message (EN vs FR), fall back to UI hint
+    let english = isEnglishMessage(lastUserMsg);
+    if (english === null) {
+      english = !(isFr ?? true);
+    }
+
     if (!ai) {
       console.warn("[Chat] GEMINI_API_KEY absent : réponse simulée renvoyée (mode dégradé).");
-      const simulatedResponse = getSimulatedResponse(messages, isFr);
+      const simulatedResponse = getSimulatedResponse(messages, !english);
       return res.json({ text: simulatedResponse, simulated: true });
     }
 
@@ -495,14 +521,23 @@ app.post("/api/chat", rateLimit({ windowMs: 60_000, max: 20 }), async (req, res)
       parts: [{ text: msg.content }]
     }));
 
+    // Strong language + conciseness directives prepended to the system instruction
+    const langDirective = english
+      ? "CRITICAL: You MUST respond ONLY in English. Do NOT use French or any other language."
+      : "CRITIQUE : Vous DEVEZ répondre UNIQUEMENT en français. N'utilisez aucune autre langue.";
+    const concisenessDirective = english
+      ? "Be concise and stay on topic: answer the question directly in 2-5 sentences or a short bullet list. No filler introductions or generic conclusions. Do not invent facts."
+      : "Soyez concis et restez sur le sujet : répondez directement en 2 à 5 phrases ou une courte liste à puces. Pas d'introductions inutiles ni de conclusions génériques. N'inventez pas de faits.";
+    const systemInstruction = `${langDirective}\n${concisenessDirective}\n\n${SYSTEM_INSTRUCTION}`;
+
     try {
       // Call generateContent with systemic context injected
       const response = await ai.models.generateContent({
         model: process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
         contents: chatParts,
         config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          temperature: 0.7,
+          systemInstruction,
+          temperature: 0.4,
         },
       });
 
