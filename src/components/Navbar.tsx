@@ -47,7 +47,6 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
       "projets",
       "competences",
       "certifications",
-      "blog",
       "passions",
       "contact"
     ];
@@ -98,7 +97,6 @@ export default function Navbar({ onChatOpen, activeSection, setActiveSection, is
     { label: t("navbar.projets"), id: "projets" },
     { label: t("navbar.competences"), id: "competences" },
     { label: t("navbar.certifications"), id: "certifications" },
-    { label: t("navbar.blog"), id: "blog" },
     { label: t("navbar.passions"), id: "passions" },
     { label: t("navbar.contact"), id: "contact" },
   ];

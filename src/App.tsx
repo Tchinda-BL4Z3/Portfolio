@@ -6,7 +6,6 @@ import About from "./components/About";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Certifications from "./components/Certifications";
-import Blog from "./components/Blog";
 import Passions from "./components/Passions";
 import Contact from "./components/Contact";
 import ChatAI from "./components/ChatAI";
@@ -104,9 +103,6 @@ export default function App() {
             {/* Official certifications */}
             <Certifications />
 
-            {/* Technical Blog */}
-            <Blog />
-
             {/* Passion segments */}
             <Passions />
 
@@ -145,7 +141,6 @@ export default function App() {
                 </button>
                 <a href="#parcours" className="hover:text-teal-400 transition-colors">{t("language") === "FR" ? "Parcours" : "Profile"}</a>
                 <a href="#projets" className="hover:text-teal-400 transition-colors">{t("language") === "FR" ? "Projets" : "Projects"}</a>
-                <a href="#blog" className="hover:text-teal-400 transition-colors">{t("language") === "FR" ? "Blog" : "Blog"}</a>
                 <a href="#contact" className="hover:text-teal-400 transition-colors">{t("language") === "FR" ? "Contact" : "Contact"}</a>
               </div>
 
